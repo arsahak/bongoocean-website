@@ -119,7 +119,7 @@ const Footer = ({ dict, lang }: FooterProps) => {
             href={`/${lang}`}
             className="font-[family-name:var(--font-heading)] text-xl font-extrabold tracking-tight text-(--color-primary) sm:text-2xl"
           >
-            Xinda<span className="text-(--color-secondary)">mart</span>
+            Bongo<span className="text-(--color-secondary)">ocean</span>
           </Link>
           <p className="mt-4 max-w-xs text-sm text-(--color-text-muted)">
             {dict.footer.tagline}

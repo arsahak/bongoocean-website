@@ -58,7 +58,7 @@ const Navbar = ({ dict }: NavbarProps) => {
           href={`/${lang}`}
           className="shrink-0 font-[family-name:var(--font-heading)] text-xl font-extrabold tracking-tight text-(--color-primary) sm:text-2xl"
         >
-          Xinda<span className="text-(--color-secondary)">mart</span>
+          Bongo<span className="text-(--color-secondary)">ocean</span>
         </Link>
 
         <button
@@ -223,7 +223,7 @@ const Navbar = ({ dict }: NavbarProps) => {
             onClick={() => setMobileOpen(false)}
             className="font-[family-name:var(--font-heading)] text-xl font-extrabold tracking-tight text-(--color-primary)"
           >
-            Xinda<span className="text-(--color-secondary)">mart</span>
+            Bongo<span className="text-(--color-secondary)">ocean</span>
           </Link>
           <button
             type="button"

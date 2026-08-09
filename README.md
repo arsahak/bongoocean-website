@@ -1,14 +1,14 @@
-# Xindamart
+# Bongoocean
 
-Xindamart is a global B2B & B2C marketplace web app — built with Next.js, React, TypeScript, and Tailwind CSS.
+Bongoocean is a global B2B & B2C marketplace web app — built with Next.js, React, TypeScript, and Tailwind CSS.
 
-- **Live site:** [www.xindamart.com](https://www.xindamart.com)
+- **Live site:** [www.bongoocean.com](https://www.bongoocean.com)
 - **Stack:** Next.js (App Router, Turbopack), React, TypeScript, Tailwind CSS v4
 - **Languages:** English, Bengali, Hindi, Urdu, Arabic, Spanish, Chinese (with RTL support)
 
 ## About the Business
 
-Xindamart is a trusted global marketplace connecting buyers with millions of verified sellers worldwide.
+Bongoocean is a trusted global marketplace connecting buyers with millions of verified sellers worldwide.
 Customers can shop across a wide range of categories, while businesses can register as sellers and reach
 customers globally — with secure payments and worldwide delivery.
 
