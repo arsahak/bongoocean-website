@@ -11,7 +11,7 @@ const themes: { value: Theme; label: string; Icon: typeof Sun }[] = [
 
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
-  const current = themes.find((t) => t.value === theme) ?? themes[2];
+  const current = themes.find((t) => t.value === theme) ?? themes[0];
 
   return (
     <label className="group flex items-center gap-1.5 text-(--color-text-muted) transition-colors hover:text-(--color-primary)">

@@ -4,7 +4,7 @@ const THEME_SCRIPT = `
     var stored = localStorage.getItem("bongoocean-theme");
     var isDark =
       stored === "dark" ||
-      (stored !== "light" &&
+      (stored === "system" &&
         window.matchMedia("(prefers-color-scheme: dark)").matches);
     document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
   } catch (e) {}

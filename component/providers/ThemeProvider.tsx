@@ -35,19 +35,19 @@ function applyTheme(theme: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system");
+  const [theme, setThemeState] = useState<Theme>("light");
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">(
     "light"
   );
 
   useEffect(() => {
-    const stored = (localStorage.getItem(STORAGE_KEY) as Theme | null) ?? "system";
+    const stored = (localStorage.getItem(STORAGE_KEY) as Theme | null) ?? "light";
     setThemeState(stored);
     setResolvedTheme(applyTheme(stored));
 
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => {
-      const current = (localStorage.getItem(STORAGE_KEY) as Theme | null) ?? "system";
+      const current = (localStorage.getItem(STORAGE_KEY) as Theme | null) ?? "light";
       if (current === "system") {
         setResolvedTheme(applyTheme("system"));
       }
