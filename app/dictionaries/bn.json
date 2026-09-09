@@ -33,9 +33,9 @@
   },
   "auth": {
     "sign_in_title": "আবার স্বাগতম",
-    "sign_in_subtitle": "আপনার Xindamart অ্যাকাউন্টে সাইন ইন করুন",
+    "sign_in_subtitle": "আপনার BongoOcean অ্যাকাউন্টে সাইন ইন করুন",
     "sign_up_title": "অ্যাকাউন্ট তৈরি করুন",
-    "sign_up_subtitle": "Xindamart-এ যোগ দিন এবং বিশ্বব্যাপী কেনাকাটা শুরু করুন",
+    "sign_up_subtitle": "BongoOcean-এ যোগ দিন এবং বিশ্বব্যাপী কেনাকাটা শুরু করুন",
     "forgot_password_title": "পাসওয়ার্ড ভুলে গেছেন?",
     "forgot_password_subtitle": "পাসওয়ার্ড রিসেট করতে আপনার ইমেইল দিন",
     "email": "ইমেইল ঠিকানা",
@@ -51,10 +51,40 @@
     "back_to_sign_in": "সাইন ইনে ফিরে যান"
   },
   "home": {
-    "hero_title": "বিশ্বব্যাপী কেনাকাটা, স্থানীয় সাশ্রয়",
-    "hero_subtitle": "বিশ্বের যাচাইকৃত বিক্রেতাদের কাছ থেকে লক্ষ লক্ষ পণ্য",
-    "hero_cta": "কেনাকাটা শুরু করুন",
+    "hero_badge": "বিশ্বব্যাপী মার্কেটপ্লেস",
+    "hero_title": "পণ্যের এক বিশাল জগৎ,",
+    "hero_title_accent": "সবকিছু এক জায়গায়।",
+    "hero_subtitle": "ইলেকট্রনিকস, ফ্যাশন, হোম, বিউটি এবং আরও নানা বিভাগের বিশ্বস্ত পণ্য খুঁজে নিন—নিরাপদ পেমেন্ট ও বিশ্বব্যাপী ডেলিভারির সঙ্গে।",
+    "hero_cta": "এখনই কিনুন",
+    "hero_secure_payment": "নিরাপদ পেমেন্ট",
+    "hero_worldwide_delivery": "বিশ্বব্যাপী ডেলিভারি",
+    "hero_image_alt": "BongoOcean-এ পাওয়া নির্বাচিত বিভিন্ন পণ্যের সমাহার",
     "hero_cta_seller": "বিক্রেতা হয়ে যান",
+    "hero_slides": {
+      "electronics_badge": "সর্বশেষ ইলেকট্রনিকস",
+      "electronics_title": "আরও স্মার্ট প্রযুক্তি,",
+      "electronics_accent": "প্রতিদিন আরও সহজ।",
+      "electronics_description": "বিশ্বস্ত গ্যাজেট, অডিও এবং প্রয়োজনীয় প্রযুক্তি দিয়ে আপনার প্রতিদিনকে উন্নত করুন—পছন্দের দামে।",
+      "electronics_cta": "ইলেকট্রনিকস কিনুন",
+      "electronics_image_alt": "BongoOcean-এ পাওয়া নির্বাচিত ইলেকট্রনিকস পণ্য",
+      "lifestyle_badge": "নতুন সিজনের স্টাইল",
+      "lifestyle_title": "আপনার স্টাইল পরুন,",
+      "lifestyle_accent": "প্রতিটি মুহূর্ত হোক নিজের।",
+      "lifestyle_description": "প্রতিটি লুক, সিজন ও উপলক্ষের জন্য দৈনন্দিন প্রয়োজনীয় পোশাক এবং নজরকাড়া ফ্যাশন খুঁজে নিন।",
+      "lifestyle_cta": "ফ্যাশন কিনুন",
+      "lifestyle_image_alt": "BongoOcean-এ পাওয়া ফ্যাশন ও পোশাকের পণ্য"
+    },
+    "offers": {
+      "flash_label": "ফ্ল্যাশ সেল",
+      "flash_title": "ইলেকট্রনিকস ও গ্যাজেটস",
+      "flash_discount": "৪৫% পর্যন্ত ছাড়",
+      "clearance_label": "ক্লিয়ারেন্স",
+      "clearance_title": "হোম ও লিভিং",
+      "clearance_discount": "৩০% পর্যন্ত ছাড়",
+      "bundle_label": "বান্ডেল অফার",
+      "bundle_title": "বিউটি ও হেলথ",
+      "bundle_discount": "১টি কিনলে ১টি ফ্রি"
+    },
     "featured": "ফিচার্ড পণ্য",
     "categories": "শীর্ষ ক্যাটাগরি",
     "deals": "আজকের অফার",
@@ -76,9 +106,9 @@
     "update": "আপডেট করুন"
   },
   "footer": {
-    "tagline": "আপনার বিশ্বস্ত গ্লোবাল মার্কেটপ্লেস — লক্ষ লক্ষ পণ্য, যাচাইকৃত বিক্রেতা, বিশ্বব্যাপী ডেলিভারি।",
+    "tagline": "A World of Products, All in One Place.",
     "company": "কোম্পানি",
-    "about": "Xindamart সম্পর্কে",
+    "about": "BongoOcean সম্পর্কে",
     "careers": "ক্যারিয়ার",
     "blog": "ব্লগ",
     "contact": "যোগাযোগ করুন",
@@ -100,15 +130,15 @@
     "copyright": "সর্বস্বত্ব সংরক্ষিত।"
   },
   "topbar": {
-    "welcome": "Xindamart-এ স্বাগতম — গ্লোবাল B2B ও B2C মার্কেটপ্লেস",
+    "welcome": "Welcome to BongoOcean — A World of Products, All in One Place.",
     "track_order": "অর্ডার ট্র্যাক করুন",
-    "sell_on_xindamart": "Xindamart-এ বিক্রি করুন",
+    "sell_on_bongoocean": "BongoOcean-এ বিক্রি করুন",
     "help_center": "হেল্প সেন্টার",
     "language": "ভাষা",
     "currency": "মুদ্রা"
   },
   "meta": {
-    "title": "Xindamart — গ্লোবাল B2B ও B2C মার্কেটপ্লেস",
-    "description": "Xindamart-এ বিশ্বব্যাপী পণ্য কিনুন ও বিক্রি করুন। লক্ষাধিক যাচাইকৃত বিক্রেতা, প্রতিযোগিতামূলক মূল্য, নিরাপদ পেমেন্ট।"
+    "title": "BongoOcean — A World of Products, All in One Place.",
+    "description": "A World of Products, All in One Place. BongoOcean-এ বিশ্বব্যাপী পণ্য কিনুন ও বিক্রি করুন। লক্ষাধিক যাচাইকৃত বিক্রেতা, প্রতিযোগিতামূলক মূল্য, নিরাপদ পেমেন্ট।"
   }
 }

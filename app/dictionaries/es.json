@@ -33,9 +33,9 @@
   },
   "auth": {
     "sign_in_title": "Bienvenido de nuevo",
-    "sign_in_subtitle": "Inicia sesión en tu cuenta de Xindamart",
+    "sign_in_subtitle": "Inicia sesión en tu cuenta de BongoOcean",
     "sign_up_title": "Crear cuenta",
-    "sign_up_subtitle": "Únete a Xindamart y empieza a comprar a nivel mundial",
+    "sign_up_subtitle": "Únete a BongoOcean y empieza a comprar a nivel mundial",
     "forgot_password_title": "¿Olvidaste tu contraseña?",
     "forgot_password_subtitle": "Ingresa tu correo para restablecer tu contraseña",
     "email": "Correo electrónico",
@@ -51,10 +51,40 @@
     "back_to_sign_in": "Volver a iniciar sesión"
   },
   "home": {
-    "hero_title": "Compra globalmente, ahorra localmente",
-    "hero_subtitle": "Millones de productos de vendedores verificados en todo el mundo",
-    "hero_cta": "Empezar a comprar",
+    "hero_badge": "Mercado global",
+    "hero_title": "Un mundo de productos,",
+    "hero_title_accent": "todo en un solo lugar.",
+    "hero_subtitle": "Descubre productos confiables de electrónica, moda, hogar, belleza y mucho más, con pagos seguros y envíos a todo el mundo.",
+    "hero_cta": "Comprar ahora",
+    "hero_secure_payment": "Pagos seguros",
+    "hero_worldwide_delivery": "Envíos a todo el mundo",
+    "hero_image_alt": "Una selección de productos disponibles en BongoOcean",
     "hero_cta_seller": "Conviértete en vendedor",
+    "hero_slides": {
+      "electronics_badge": "Últimos electrónicos",
+      "electronics_title": "Tecnología inteligente,",
+      "electronics_accent": "mejor cada día.",
+      "electronics_description": "Mejora tu día a día con dispositivos, audio y tecnología esencial de confianza a precios que te encantarán.",
+      "electronics_cta": "Comprar electrónicos",
+      "electronics_image_alt": "Electrónicos destacados disponibles en BongoOcean",
+      "lifestyle_badge": "Estilo de nueva temporada",
+      "lifestyle_title": "Viste tu estilo,",
+      "lifestyle_accent": "haz tuyo cada momento.",
+      "lifestyle_description": "Descubre prendas esenciales y moda destacada para cada look, temporada y ocasión.",
+      "lifestyle_cta": "Comprar moda",
+      "lifestyle_image_alt": "Productos de moda y ropa disponibles en BongoOcean"
+    },
+    "offers": {
+      "flash_label": "Venta flash",
+      "flash_title": "Electrónica y dispositivos",
+      "flash_discount": "Hasta 45% de descuento",
+      "clearance_label": "Liquidación",
+      "clearance_title": "Hogar y decoración",
+      "clearance_discount": "Hasta 30% de descuento",
+      "bundle_label": "Oferta de paquete",
+      "bundle_title": "Belleza y salud",
+      "bundle_discount": "Compra 1 y llévate 1 gratis"
+    },
     "featured": "Productos destacados",
     "categories": "Categoría Principal",
     "deals": "Ofertas de hoy",
@@ -76,9 +106,9 @@
     "update": "Actualizar"
   },
   "footer": {
-    "tagline": "Tu mercado global de confianza: millones de productos, vendedores verificados, envíos a todo el mundo.",
+    "tagline": "A World of Products, All in One Place.",
     "company": "Empresa",
-    "about": "Sobre Xindamart",
+    "about": "Sobre BongoOcean",
     "careers": "Empleo",
     "blog": "Blog",
     "contact": "Contáctanos",
@@ -100,15 +130,15 @@
     "copyright": "Todos los derechos reservados."
   },
   "topbar": {
-    "welcome": "Bienvenido a Xindamart — el marketplace B2B y B2C global",
+    "welcome": "Welcome to BongoOcean — A World of Products, All in One Place.",
     "track_order": "Rastrear pedido",
-    "sell_on_xindamart": "Vender en Xindamart",
+    "sell_on_bongoocean": "Vender en BongoOcean",
     "help_center": "Centro de ayuda",
     "language": "Idioma",
     "currency": "Moneda"
   },
   "meta": {
-    "title": "Xindamart — Marketplace B2B y B2C Global",
-    "description": "Compra y vende productos en todo el mundo en Xindamart. Millones de vendedores verificados, precios competitivos, pagos seguros."
+    "title": "BongoOcean — A World of Products, All in One Place.",
+    "description": "A World of Products, All in One Place. Compra y vende productos en todo el mundo en BongoOcean. Millones de vendedores verificados, precios competitivos, pagos seguros."
   }
 }

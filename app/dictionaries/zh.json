@@ -33,9 +33,9 @@
   },
   "auth": {
     "sign_in_title": "欢迎回来",
-    "sign_in_subtitle": "登录您的 Xindamart 账户",
+    "sign_in_subtitle": "登录您的 BongoOcean 账户",
     "sign_up_title": "创建账户",
-    "sign_up_subtitle": "加入 Xindamart，开启全球购物",
+    "sign_up_subtitle": "加入 BongoOcean，开启全球购物",
     "forgot_password_title": "忘记密码？",
     "forgot_password_subtitle": "请输入您的邮箱以重置密码",
     "email": "电子邮箱",
@@ -51,10 +51,40 @@
     "back_to_sign_in": "返回登录"
   },
   "home": {
-    "hero_title": "全球购物，本地省钱",
-    "hero_subtitle": "来自全球认证卖家的数百万商品",
-    "hero_cta": "开始购物",
+    "hero_badge": "全球购物平台",
+    "hero_title": "缤纷商品世界，",
+    "hero_title_accent": "尽在一处。",
+    "hero_subtitle": "探索电子产品、时尚、家居、美妆等值得信赖的商品，享受安全支付与全球配送。",
+    "hero_cta": "立即选购",
+    "hero_secure_payment": "安全支付",
+    "hero_worldwide_delivery": "全球配送",
+    "hero_image_alt": "BongoOcean 提供的精选商品组合",
     "hero_cta_seller": "成为卖家",
+    "hero_slides": {
+      "electronics_badge": "最新电子产品",
+      "electronics_title": "科技更智能，",
+      "electronics_accent": "生活更美好。",
+      "electronics_description": "精选可靠的数码产品、音频设备和必备科技，以心动价格升级你的日常生活。",
+      "electronics_cta": "选购电子产品",
+      "electronics_image_alt": "BongoOcean 提供的精选电子产品",
+      "lifestyle_badge": "新季风尚",
+      "lifestyle_title": "穿出你的风格，",
+      "lifestyle_accent": "闪耀每个时刻。",
+      "lifestyle_description": "探索适合各种造型、季节与场合的日常必备服饰和亮眼时尚单品。",
+      "lifestyle_cta": "选购时尚",
+      "lifestyle_image_alt": "BongoOcean 提供的时尚服装商品"
+    },
+    "offers": {
+      "flash_label": "限时抢购",
+      "flash_title": "电子产品与数码",
+      "flash_discount": "最高优惠 45%",
+      "clearance_label": "清仓特卖",
+      "clearance_title": "家居生活",
+      "clearance_discount": "最高优惠 30%",
+      "bundle_label": "组合优惠",
+      "bundle_title": "美妆与健康",
+      "bundle_discount": "买一送一"
+    },
     "featured": "精选商品",
     "categories": "热门分类",
     "deals": "今日特惠",
@@ -76,9 +106,9 @@
     "update": "更新"
   },
   "footer": {
-    "tagline": "您值得信赖的全球市场 — 数百万商品，认证卖家，全球配送。",
+    "tagline": "A World of Products, All in One Place.",
     "company": "公司",
-    "about": "关于 Xindamart",
+    "about": "关于 BongoOcean",
     "careers": "招聘",
     "blog": "博客",
     "contact": "联系我们",
@@ -100,15 +130,15 @@
     "copyright": "版权所有。"
   },
   "topbar": {
-    "welcome": "欢迎来到 Xindamart — 全球 B2B 与 B2C 交易平台",
+    "welcome": "Welcome to BongoOcean — A World of Products, All in One Place.",
     "track_order": "追踪订单",
-    "sell_on_xindamart": "在 Xindamart 上开店",
+    "sell_on_bongoocean": "在 BongoOcean 上开店",
     "help_center": "帮助中心",
     "language": "语言",
     "currency": "货币"
   },
   "meta": {
-    "title": "Xindamart — 全球 B2B 与 B2C 交易平台",
-    "description": "在 Xindamart 上买卖全球商品。数百万认证卖家，价格优惠，支付安全。"
+    "title": "BongoOcean — A World of Products, All in One Place.",
+    "description": "A World of Products, All in One Place. 在 BongoOcean 上买卖全球商品。数百万认证卖家，价格优惠，支付安全。"
   }
 }

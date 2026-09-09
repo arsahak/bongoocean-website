@@ -18,6 +18,7 @@ import {
   User,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -56,9 +57,17 @@ const Navbar = ({ dict }: NavbarProps) => {
 
         <Link
           href={`/${lang}`}
-          className="shrink-0 font-[family-name:var(--font-heading)] text-xl font-extrabold tracking-tight text-(--color-primary) sm:text-2xl"
+          className="flex shrink-0 items-center transition-opacity hover:opacity-85"
+          aria-label="BongoOcean home"
         >
-          Bongo<span className="text-(--color-secondary)">ocean</span>
+          <Image
+            src="/assets/logo/bongoocean.svg"
+            alt="BongoOcean"
+            width={162}
+            height={40}
+            priority
+            className="h-8 w-auto sm:h-9"
+          />
         </Link>
 
         <button
@@ -221,9 +230,16 @@ const Navbar = ({ dict }: NavbarProps) => {
           <Link
             href={`/${lang}`}
             onClick={() => setMobileOpen(false)}
-            className="font-[family-name:var(--font-heading)] text-xl font-extrabold tracking-tight text-(--color-primary)"
+            className="flex items-center transition-opacity hover:opacity-85"
+            aria-label="BongoOcean home"
           >
-            Bongo<span className="text-(--color-secondary)">ocean</span>
+            <Image
+              src="/assets/logo/bongoocean.svg"
+              alt="BongoOcean"
+              width={146}
+              height={36}
+              className="h-8 w-auto"
+            />
           </Link>
           <button
             type="button"

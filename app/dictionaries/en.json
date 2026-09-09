@@ -33,9 +33,9 @@
   },
   "auth": {
     "sign_in_title": "Welcome back",
-    "sign_in_subtitle": "Sign in to your Xindamart account",
+    "sign_in_subtitle": "Sign in to your BongoOcean account",
     "sign_up_title": "Create account",
-    "sign_up_subtitle": "Join Xindamart and start shopping globally",
+    "sign_up_subtitle": "Join BongoOcean and start shopping globally",
     "forgot_password_title": "Forgot password?",
     "forgot_password_subtitle": "Enter your email to reset your password",
     "email": "Email address",
@@ -51,10 +51,40 @@
     "back_to_sign_in": "Back to sign in"
   },
   "home": {
-    "hero_title": "Shop Globally, Save Locally",
-    "hero_subtitle": "Millions of products from verified sellers worldwide",
-    "hero_cta": "Start Shopping",
+    "hero_badge": "Global marketplace",
+    "hero_title": "A World of Products,",
+    "hero_title_accent": "All in One Place.",
+    "hero_subtitle": "Discover trusted products across electronics, fashion, home, beauty, and more—with secure payments and worldwide delivery.",
+    "hero_cta": "Shop now",
+    "hero_secure_payment": "Secure payments",
+    "hero_worldwide_delivery": "Worldwide delivery",
+    "hero_image_alt": "A curated selection of products available on BongoOcean",
     "hero_cta_seller": "Become a Seller",
+    "hero_slides": {
+      "electronics_badge": "Latest electronics",
+      "electronics_title": "Smarter Tech,",
+      "electronics_accent": "Better Every Day.",
+      "electronics_description": "Upgrade your everyday with reliable gadgets, audio, and essential tech at prices you’ll love.",
+      "electronics_cta": "Shop electronics",
+      "electronics_image_alt": "Featured electronics available on BongoOcean",
+      "lifestyle_badge": "New-season style",
+      "lifestyle_title": "Wear Your Style,",
+      "lifestyle_accent": "Own Every Moment.",
+      "lifestyle_description": "Explore everyday essentials and standout fashion for every look, season, and occasion.",
+      "lifestyle_cta": "Shop fashion",
+      "lifestyle_image_alt": "Fashion and clothing products available on BongoOcean"
+    },
+    "offers": {
+      "flash_label": "Flash Sale",
+      "flash_title": "Electronics & Gadgets",
+      "flash_discount": "Up to 45% off",
+      "clearance_label": "Clearance",
+      "clearance_title": "Home & Living",
+      "clearance_discount": "Up to 30% off",
+      "bundle_label": "Bundle Deal",
+      "bundle_title": "Beauty & Health",
+      "bundle_discount": "Buy 1, get 1 free"
+    },
     "featured": "Featured Products",
     "categories": "Top Category",
     "deals": "Today's Deals",
@@ -76,9 +106,9 @@
     "update": "Update"
   },
   "footer": {
-    "tagline": "Your trusted global marketplace — millions of products, verified sellers, worldwide delivery.",
+    "tagline": "A World of Products, All in One Place.",
     "company": "Company",
-    "about": "About Xindamart",
+    "about": "About BongoOcean",
     "careers": "Careers",
     "blog": "Blog",
     "contact": "Contact Us",
@@ -100,15 +130,15 @@
     "copyright": "All rights reserved."
   },
   "topbar": {
-    "welcome": "Welcome to Xindamart — the global B2B & B2C marketplace",
+    "welcome": "Welcome to BongoOcean — A World of Products, All in One Place.",
     "track_order": "Track Order",
-    "sell_on_xindamart": "Sell on Xindamart",
+    "sell_on_bongoocean": "Sell on BongoOcean",
     "help_center": "Help Center",
     "language": "Language",
     "currency": "Currency"
   },
   "meta": {
-    "title": "Xindamart — Global B2B & B2C Marketplace",
-    "description": "Buy and sell products worldwide on Xindamart. Millions of verified sellers, competitive prices, secure payments."
+    "title": "BongoOcean — A World of Products, All in One Place.",
+    "description": "A World of Products, All in One Place. Buy and sell products worldwide on BongoOcean. Millions of verified sellers, competitive prices, secure payments."
   }
 }

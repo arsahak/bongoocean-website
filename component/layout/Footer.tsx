@@ -16,6 +16,7 @@ import {
   YoutubeIcon,
 } from "@/component/icons/SocialIcons";
 import { Send, ShieldCheck } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { ThemeSwitcher } from "../common/ThemeSwitcher";
 
@@ -53,7 +54,7 @@ const Footer = ({ dict, lang }: FooterProps) => {
     { label: dict.footer.about, href: `/${lang}/about` },
     { label: dict.footer.careers, href: `/${lang}/careers` },
     { label: dict.footer.blog, href: `/${lang}/blog` },
-    { label: dict.topbar.sell_on_xindamart, href: `/${lang}/sell` },
+    { label: dict.topbar.sell_on_bongoocean, href: `/${lang}/sell` },
     { label: dict.footer.contact, href: `/${lang}/contact` },
   ];
 
@@ -81,23 +82,23 @@ const Footer = ({ dict, lang }: FooterProps) => {
   const socialLinks = [
     {
       label: "Facebook",
-      href: "https://facebook.com/xindamart",
+      href: "https://facebook.com/bongoocean",
       Icon: FacebookIcon,
     },
     {
       label: "Instagram",
-      href: "https://instagram.com/xindamart",
+      href: "https://instagram.com/bongoocean",
       Icon: InstagramIcon,
     },
-    { label: "X (Twitter)", href: "https://x.com/xindamart", Icon: XIcon },
+    { label: "X (Twitter)", href: "https://x.com/bongoocean", Icon: XIcon },
     {
       label: "YouTube",
-      href: "https://youtube.com/@xindamart",
+      href: "https://youtube.com/@bongoocean",
       Icon: YoutubeIcon,
     },
     {
       label: "LinkedIn",
-      href: "https://linkedin.com/company/xindamart",
+      href: "https://linkedin.com/company/bongoocean",
       Icon: LinkedinIcon,
     },
   ];
@@ -117,9 +118,16 @@ const Footer = ({ dict, lang }: FooterProps) => {
         <div className="col-span-2 sm:col-span-3 lg:col-span-4">
           <Link
             href={`/${lang}`}
-            className="font-[family-name:var(--font-heading)] text-xl font-extrabold tracking-tight text-(--color-primary) sm:text-2xl"
+            className="inline-flex items-center transition-opacity hover:opacity-85"
+            aria-label="BongoOcean home"
           >
-            Bongo<span className="text-(--color-secondary)">ocean</span>
+            <Image
+              src="/assets/logo/bongoocean.svg"
+              alt="BongoOcean"
+              width={178}
+              height={44}
+              className="h-10 w-auto sm:h-11"
+            />
           </Link>
           <p className="mt-4 max-w-xs text-sm text-(--color-text-muted)">
             {dict.footer.tagline}
@@ -215,7 +223,7 @@ const Footer = ({ dict, lang }: FooterProps) => {
       <div className="border-t border-(--color-border) bg-(--color-bg)">
         <div className="container flex flex-col items-center justify-between gap-4 py-5 text-sm text-(--color-text-muted) sm:flex-row sm:flex-wrap">
           <p>
-            © {year} Xindamart. {dict.footer.copyright}
+            © {year} BongoOcean. {dict.footer.copyright}
           </p>
           <div className="flex items-center gap-5">
             {legalLinks.map((link) => (

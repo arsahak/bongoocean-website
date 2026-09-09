@@ -33,9 +33,9 @@
   },
   "auth": {
     "sign_in_title": "مرحباً بعودتك",
-    "sign_in_subtitle": "سجّل الدخول إلى حساب Xindamart الخاص بك",
+    "sign_in_subtitle": "سجّل الدخول إلى حساب BongoOcean الخاص بك",
     "sign_up_title": "إنشاء حساب",
-    "sign_up_subtitle": "انضم إلى Xindamart وابدأ التسوق عالمياً",
+    "sign_up_subtitle": "انضم إلى BongoOcean وابدأ التسوق عالمياً",
     "forgot_password_title": "نسيت كلمة المرور؟",
     "forgot_password_subtitle": "أدخل بريدك الإلكتروني لإعادة تعيين كلمة المرور",
     "email": "البريد الإلكتروني",
@@ -51,10 +51,40 @@
     "back_to_sign_in": "العودة إلى تسجيل الدخول"
   },
   "home": {
-    "hero_title": "تسوّق عالمياً، ووفّر محلياً",
-    "hero_subtitle": "ملايين المنتجات من بائعين موثّقين حول العالم",
-    "hero_cta": "ابدأ التسوق",
+    "hero_badge": "السوق العالمي",
+    "hero_title": "عالم من المنتجات،",
+    "hero_title_accent": "كلها في مكان واحد.",
+    "hero_subtitle": "اكتشف منتجات موثوقة في الإلكترونيات والأزياء والمنزل والجمال والمزيد، مع دفع آمن وتوصيل إلى جميع أنحاء العالم.",
+    "hero_cta": "تسوّق الآن",
+    "hero_secure_payment": "دفع آمن",
+    "hero_worldwide_delivery": "توصيل عالمي",
+    "hero_image_alt": "مجموعة مختارة من المنتجات المتاحة على BongoOcean",
     "hero_cta_seller": "كن بائعاً",
+    "hero_slides": {
+      "electronics_badge": "أحدث الإلكترونيات",
+      "electronics_title": "تقنية أكثر ذكاءً،",
+      "electronics_accent": "ليوم أفضل دائماً.",
+      "electronics_description": "طوّر يومك مع أجهزة موثوقة ومنتجات صوتية وتقنيات أساسية بأسعار ستعجبك.",
+      "electronics_cta": "تسوّق الإلكترونيات",
+      "electronics_image_alt": "إلكترونيات مختارة متاحة على BongoOcean",
+      "lifestyle_badge": "أناقة الموسم الجديد",
+      "lifestyle_title": "ارتدِ أسلوبك،",
+      "lifestyle_accent": "وامتلك كل لحظة.",
+      "lifestyle_description": "استكشف أساسيات يومية وأزياء مميزة لكل إطلالة وموسم ومناسبة.",
+      "lifestyle_cta": "تسوّق الأزياء",
+      "lifestyle_image_alt": "منتجات الأزياء والملابس المتاحة على BongoOcean"
+    },
+    "offers": {
+      "flash_label": "تخفيضات خاطفة",
+      "flash_title": "الإلكترونيات والأجهزة",
+      "flash_discount": "خصم يصل إلى 45٪",
+      "clearance_label": "تصفية",
+      "clearance_title": "المنزل والمعيشة",
+      "clearance_discount": "خصم يصل إلى 30٪",
+      "bundle_label": "عرض الحزمة",
+      "bundle_title": "الجمال والصحة",
+      "bundle_discount": "اشترِ 1 واحصل على 1 مجاناً"
+    },
     "featured": "منتجات مميزة",
     "categories": "أفضل الفئات",
     "deals": "عروض اليوم",
@@ -76,9 +106,9 @@
     "update": "تحديث"
   },
   "footer": {
-    "tagline": "سوقك العالمي الموثوق — ملايين المنتجات، بائعون موثّقون، توصيل لجميع أنحاء العالم.",
+    "tagline": "A World of Products, All in One Place.",
     "company": "الشركة",
-    "about": "عن Xindamart",
+    "about": "عن BongoOcean",
     "careers": "وظائف",
     "blog": "المدونة",
     "contact": "اتصل بنا",
@@ -100,15 +130,15 @@
     "copyright": "جميع الحقوق محفوظة."
   },
   "topbar": {
-    "welcome": "مرحباً بك في Xindamart — سوق B2B و B2C العالمي",
+    "welcome": "Welcome to BongoOcean — A World of Products, All in One Place.",
     "track_order": "تتبع الطلب",
-    "sell_on_xindamart": "البيع على Xindamart",
+    "sell_on_bongoocean": "البيع على BongoOcean",
     "help_center": "مركز المساعدة",
     "language": "اللغة",
     "currency": "العملة"
   },
   "meta": {
-    "title": "Xindamart — سوق B2B و B2C العالمي",
-    "description": "اشترِ وبِع المنتجات حول العالم على Xindamart. ملايين البائعين الموثّقين، أسعار تنافسية، مدفوعات آمنة."
+    "title": "BongoOcean — A World of Products, All in One Place.",
+    "description": "A World of Products, All in One Place. اشترِ وبِع المنتجات حول العالم على BongoOcean. ملايين البائعين الموثّقين، أسعار تنافسية، مدفوعات آمنة."
   }
 }

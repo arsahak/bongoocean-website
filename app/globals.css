@@ -19,20 +19,22 @@
 
 /* ─── Brand Tokens ─────────────────────────────────────── */
 :root {
-  /* Primary — Indigo */
-  --color-primary:        #3D27E8;
-  --color-primary-dark:   #2B1CB0;
-  --color-primary-light:  #6B57FF;
-  --color-primary-faint:  rgba(61, 39, 232, 0.08);
+  /* BongoOcean brand palette */
+  --color-primary:            #013db3;
+  --color-primary-dark:       #002b80;
+  --color-primary-light:      #356be0;
+  --color-primary-faint:      rgba(1, 61, 179, 0.08);
+  --color-primary-foreground: #ffffff;
 
-  /* Secondary — Coral Red */
-  --color-secondary:      #FF4757;
-  --color-secondary-dark: #D93546;
-  --color-secondary-light:#FF6B78;
-  --color-secondary-faint:rgba(255, 71, 87, 0.08);
+  --color-secondary:            #00c4f3;
+  --color-secondary-dark:       #009cc2;
+  --color-secondary-light:      #47d7f8;
+  --color-secondary-faint:      rgba(0, 196, 243, 0.1);
+  --color-secondary-foreground: #0a0a0a;
 
-  /* Accent */
-  --color-accent:         #FFC107;
+  /* Cyan is the supporting accent throughout the storefront. */
+  --color-accent:            var(--color-secondary);
+  --color-accent-foreground: var(--color-black);
 
   /* Semantic */
   --color-success:        #10B981;
@@ -41,16 +43,21 @@
   --color-info:           #3B82F6;
 
   /* Surface */
-  --color-bg:             #F9FAFB;
-  --color-surface:        #FFFFFF;
-  --color-surface-raised: #FFFFFF;
-  --color-dark:           #1E1E2E;
+  --color-bg:             #f4f7fc;
+  --color-surface:        #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-dark:           #0a0a0a;
+  --color-black:          #0a0a0a;
+  --color-white:          #ffffff;
 
   /* Text */
-  --color-text:           #1E1E2E;
-  --color-text-muted:     #6B7280;
-  --color-text-light:     #9CA3AF;
-  --color-border:         #E5E7EB;
+  --color-text:             var(--color-black);
+  --color-text-muted:       #5e6470;
+  --color-text-light:       #7a8494;
+  --color-muted:            #f4f7fc;
+  --color-muted-foreground: #5e6470;
+  --color-border:           #d9e2f2;
+  --color-input:            #d9e2f2;
 
   /* Typography */
   --font-heading: var(--font-jakarta), 'Plus Jakarta Sans', sans-serif;
@@ -79,25 +86,28 @@
    ThemeProvider sets this explicitly (manual toggle) and
    also defaults to it when the OS is in dark mode. ────── */
 [data-theme="dark"] {
-  --color-primary:        #6B57FF;
-  --color-primary-dark:   #5A47E0;
-  --color-primary-light:  #8A7AFF;
-  --color-primary-faint:  rgba(107, 87, 255, 0.12);
+  --color-primary:        #013db3;
+  --color-primary-dark:   #002b80;
+  --color-primary-light:  #356be0;
+  --color-primary-faint:  rgba(53, 107, 224, 0.18);
 
-  --color-secondary:      #FF6B78;
-  --color-secondary-dark: #FF4757;
-  --color-secondary-light:#FF8C96;
-  --color-secondary-faint:rgba(255, 107, 120, 0.12);
+  --color-secondary:       #00c4f3;
+  --color-secondary-dark:  #009cc2;
+  --color-secondary-light: #47d7f8;
+  --color-secondary-faint: rgba(0, 196, 243, 0.14);
 
-  --color-bg:             #0F0F1A;
-  --color-surface:        #1A1A2E;
-  --color-surface-raised: #232339;
-  --color-dark:           #F9FAFB;
+  --color-bg:             #0a0a0a;
+  --color-surface:        #111318;
+  --color-surface-raised: #171a21;
+  --color-dark:           #ffffff;
 
-  --color-text:           #E5E7EB;
-  --color-text-muted:     #9CA3AF;
-  --color-text-light:     #6B7280;
-  --color-border:         #2D2D45;
+  --color-text:             #ffffff;
+  --color-text-muted:       #b4bbc7;
+  --color-text-light:       #7a8494;
+  --color-muted:            #141a24;
+  --color-muted-foreground: #b4bbc7;
+  --color-border:           #263248;
+  --color-input:            #263248;
 
   --shadow-sm:   0 1px 3px rgba(0,0,0,0.30);
   --shadow-md:   0 4px 12px rgba(0,0,0,0.35);

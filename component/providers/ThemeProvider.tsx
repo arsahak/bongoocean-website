@@ -17,7 +17,7 @@ interface ThemeContextValue {
   toggleTheme: () => void;
 }
 
-const STORAGE_KEY = "xindamart-theme";
+const STORAGE_KEY = "bongoocean-theme";
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 

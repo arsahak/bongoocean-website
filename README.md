@@ -8,7 +8,7 @@ Bongoocean is a global B2B & B2C marketplace web app — built with Next.js, Rea
 
 ## About the Business
 
-Bongoocean is a trusted global marketplace connecting buyers with millions of verified sellers worldwide.
+BongoOcean — A World of Products, All in One Place.
 Customers can shop across a wide range of categories, while businesses can register as sellers and reach
 customers globally — with secure payments and worldwide delivery.
 

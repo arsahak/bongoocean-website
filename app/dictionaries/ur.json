@@ -33,9 +33,9 @@
   },
   "auth": {
     "sign_in_title": "خوش آمدید",
-    "sign_in_subtitle": "اپنے Xindamart اکاؤنٹ میں سائن ان کریں",
+    "sign_in_subtitle": "اپنے BongoOcean اکاؤنٹ میں سائن ان کریں",
     "sign_up_title": "اکاؤنٹ بنائیں",
-    "sign_up_subtitle": "Xindamart میں شامل ہوں اور دنیا بھر میں خریداری شروع کریں",
+    "sign_up_subtitle": "BongoOcean میں شامل ہوں اور دنیا بھر میں خریداری شروع کریں",
     "forgot_password_title": "پاسورڈ بھول گئے؟",
     "forgot_password_subtitle": "پاسورڈ ری سیٹ کرنے کے لیے اپنا ای میل درج کریں",
     "email": "ای میل ایڈریس",
@@ -51,10 +51,40 @@
     "back_to_sign_in": "سائن ان پر واپس جائیں"
   },
   "home": {
-    "hero_title": "دنیا بھر میں خریداری، مقامی بچت",
-    "hero_subtitle": "دنیا بھر کے تصدیق شدہ فروخت کنندگان سے لاکھوں مصنوعات",
-    "hero_cta": "خریداری شروع کریں",
+    "hero_badge": "عالمی مارکیٹ پلیس",
+    "hero_title": "مصنوعات کی پوری دنیا،",
+    "hero_title_accent": "سب کچھ ایک ہی جگہ۔",
+    "hero_subtitle": "الیکٹرانکس، فیشن، گھر، خوبصورتی اور مزید زمروں میں قابلِ اعتماد مصنوعات دریافت کریں—محفوظ ادائیگی اور دنیا بھر میں ڈیلیوری کے ساتھ۔",
+    "hero_cta": "ابھی خریدیں",
+    "hero_secure_payment": "محفوظ ادائیگی",
+    "hero_worldwide_delivery": "دنیا بھر میں ڈیلیوری",
+    "hero_image_alt": "BongoOcean پر دستیاب منتخب مصنوعات کا مجموعہ",
     "hero_cta_seller": "فروخت کنندہ بنیں",
+    "hero_slides": {
+      "electronics_badge": "جدید ترین الیکٹرانکس",
+      "electronics_title": "زیادہ اسمارٹ ٹیکنالوجی،",
+      "electronics_accent": "ہر دن مزید بہتر۔",
+      "electronics_description": "قابلِ اعتماد گیجٹس، آڈیو اور ضروری ٹیکنالوجی کے ساتھ اپنی روزمرہ زندگی بہتر بنائیں—پسندیدہ قیمتوں پر۔",
+      "electronics_cta": "الیکٹرانکس خریدیں",
+      "electronics_image_alt": "BongoOcean پر دستیاب منتخب الیکٹرانکس",
+      "lifestyle_badge": "نئے سیزن کا اسٹائل",
+      "lifestyle_title": "اپنا اسٹائل پہنیں،",
+      "lifestyle_accent": "ہر لمحہ اپنا بنائیں۔",
+      "lifestyle_description": "ہر انداز، موسم اور موقع کے لیے روزمرہ ضروریات اور نمایاں فیشن دریافت کریں۔",
+      "lifestyle_cta": "فیشن خریدیں",
+      "lifestyle_image_alt": "BongoOcean پر دستیاب فیشن اور ملبوسات"
+    },
+    "offers": {
+      "flash_label": "فلیش سیل",
+      "flash_title": "الیکٹرانکس اور گیجٹس",
+      "flash_discount": "45% تک رعایت",
+      "clearance_label": "کلیئرنس",
+      "clearance_title": "گھر اور رہن سہن",
+      "clearance_discount": "30% تک رعایت",
+      "bundle_label": "بنڈل ڈیل",
+      "bundle_title": "بیوٹی اور ہیلتھ",
+      "bundle_discount": "1 خریدیں، 1 مفت پائیں"
+    },
     "featured": "نمایاں مصنوعات",
     "categories": "اعلیٰ زمرہ",
     "deals": "آج کی ڈیلز",
@@ -76,9 +106,9 @@
     "update": "اپ ڈیٹ کریں"
   },
   "footer": {
-    "tagline": "آپ کا قابلِ اعتماد گلوبل مارکیٹ پلیس — لاکھوں مصنوعات، تصدیق شدہ بیچنے والے، دنیا بھر میں ترسیل۔",
+    "tagline": "A World of Products, All in One Place.",
     "company": "کمپنی",
-    "about": "Xindamart کے بارے میں",
+    "about": "BongoOcean کے بارے میں",
     "careers": "کیریئر",
     "blog": "بلاگ",
     "contact": "ہم سے رابطہ کریں",
@@ -100,15 +130,15 @@
     "copyright": "جملہ حقوق محفوظ ہیں۔"
   },
   "topbar": {
-    "welcome": "Xindamart میں خوش آمدید — عالمی B2B اور B2C مارکیٹ پلیس",
+    "welcome": "Welcome to BongoOcean — A World of Products, All in One Place.",
     "track_order": "آرڈر ٹریک کریں",
-    "sell_on_xindamart": "Xindamart پر فروخت کریں",
+    "sell_on_bongoocean": "BongoOcean پر فروخت کریں",
     "help_center": "مدد کا مرکز",
     "language": "زبان",
     "currency": "کرنسی"
   },
   "meta": {
-    "title": "Xindamart — عالمی B2B اور B2C مارکیٹ پلیس",
-    "description": "Xindamart پر دنیا بھر میں مصنوعات خریدیں اور فروخت کریں۔ لاکھوں تصدیق شدہ فروخت کنندگان، مسابقتی قیمتیں، محفوظ ادائیگیاں۔"
+    "title": "BongoOcean — A World of Products, All in One Place.",
+    "description": "A World of Products, All in One Place. BongoOcean پر دنیا بھر میں مصنوعات خریدیں اور فروخت کریں۔ لاکھوں تصدیق شدہ فروخت کنندگان، مسابقتی قیمتیں، محفوظ ادائیگیاں۔"
   }
 }

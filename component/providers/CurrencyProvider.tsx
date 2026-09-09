@@ -38,7 +38,7 @@ interface CurrencyContextValue {
   format: (amountInBase: number) => string;
 }
 
-const STORAGE_KEY = "xindamart-currency";
+const STORAGE_KEY = "bongoocean-currency";
 
 const CurrencyContext = createContext<CurrencyContextValue | undefined>(
   undefined

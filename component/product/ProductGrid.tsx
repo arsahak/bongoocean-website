@@ -1,321 +1,367 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
-import { ChevronDown, Search, SlidersHorizontal } from "lucide-react";
-import { allProducts, colorSwatches, type Product } from "@/app/data/products";
-import { navCategories } from "@/app/data/categories";
+import { useCallback, useEffect, useState } from "react";
+import {
+  ChevronDown,
+  Gem,
+  Home,
+  Loader2,
+  Package,
+  Search,
+  Shirt,
+  ShoppingBag,
+  Smartphone,
+  Watch as WatchIcon,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { search1688Action, type SourcingItem } from "@/app/actions/products";
 import type { Locale } from "@/app/i18n-config";
-import { useCurrency } from "@/component/providers/CurrencyProvider";
-import { ProductCard } from "@/component/product/ProductCard";
 
 interface ProductGridProps {
   lang: Locale;
 }
 
-type Badge = NonNullable<Product["badge"]>;
-
-const PRICE_BUCKETS = [
-  { id: "under-25", min: undefined, max: 25 },
-  { id: "25-50", min: 25, max: 50 },
-  { id: "50-100", min: 50, max: 100 },
-  { id: "100-plus", min: 100, max: undefined },
+// Left-side category shortcuts — the sourcing API is keyword-search only (no
+// real category browsing), so every category/subcategory is just a curated
+// search term.
+const CATEGORIES = [
+  {
+    id: "cosmetics",
+    label: "Cosmetics",
+    keyword: "化妆品",
+    icon: Gem,
+    subcategories: [
+      { id: "skincare", label: "Skincare", keyword: "护肤品" },
+      { id: "makeup", label: "Makeup", keyword: "彩妆" },
+      { id: "haircare", label: "Hair Care", keyword: "洗发水" },
+      { id: "fragrance", label: "Fragrance", keyword: "香水" },
+    ],
+  },
+  {
+    id: "clothing",
+    label: "Clothing",
+    keyword: "服装",
+    icon: Shirt,
+    subcategories: [
+      { id: "womens", label: "Women's Wear", keyword: "女装" },
+      { id: "mens", label: "Men's Wear", keyword: "男装" },
+      { id: "kids", label: "Kids Wear", keyword: "童装" },
+      { id: "outerwear", label: "Outerwear", keyword: "外套" },
+    ],
+  },
+  {
+    id: "watch",
+    label: "Watch",
+    keyword: "手表",
+    icon: WatchIcon,
+    subcategories: [
+      { id: "mens-watch", label: "Men's Watch", keyword: "男士手表" },
+      { id: "womens-watch", label: "Women's Watch", keyword: "女士手表" },
+      { id: "smart-watch", label: "Smart Watch", keyword: "智能手表" },
+    ],
+  },
+  {
+    id: "electronics",
+    label: "Electronics",
+    keyword: "电子产品",
+    icon: Smartphone,
+    subcategories: [
+      { id: "phone-accessories", label: "Phone Accessories", keyword: "手机配件" },
+      { id: "earphones", label: "Earphones", keyword: "耳机" },
+      { id: "chargers", label: "Chargers & Cables", keyword: "充电器" },
+    ],
+  },
+  {
+    id: "bags-shoes",
+    label: "Bags & Shoes",
+    keyword: "箱包鞋类",
+    icon: ShoppingBag,
+    subcategories: [
+      { id: "womens-shoes", label: "Women's Shoes", keyword: "女鞋" },
+      { id: "mens-shoes", label: "Men's Shoes", keyword: "男鞋" },
+      { id: "handbags", label: "Handbags", keyword: "手提包" },
+    ],
+  },
+  {
+    id: "home-kitchen",
+    label: "Home & Kitchen",
+    keyword: "家居厨房",
+    icon: Home,
+    subcategories: [
+      { id: "kitchen-gadgets", label: "Kitchen Gadgets", keyword: "厨房用品" },
+      { id: "storage", label: "Storage", keyword: "收纳用品" },
+      { id: "decor", label: "Home Decor", keyword: "家居装饰" },
+    ],
+  },
 ] as const;
 
-const RATING_OPTIONS = [4, 3, 2] as const;
-
-const BADGE_OPTIONS: { value: Badge; label: string }[] = [
-  { value: "sale", label: "On Sale" },
-  { value: "hot", label: "Hot Deals" },
-  { value: "new", label: "New Arrivals" },
-];
-
 const SORT_OPTIONS = [
-  { value: "featured", label: "Featured" },
-  { value: "price-asc", label: "Price: Low to High" },
-  { value: "price-desc", label: "Price: High to Low" },
-  { value: "rating-desc", label: "Highest Rated" },
+  { value: "default", label: "Sort: Featured" },
+  { value: "price_asc", label: "Price: Low to High" },
+  { value: "price_desc", label: "Price: High to Low" },
 ] as const;
 
 type SortValue = (typeof SORT_OPTIONS)[number]["value"];
+type Category = (typeof CATEGORIES)[number];
 
-const AVAILABLE_COLORS = Array.from(
-  new Set(allProducts.map((p) => p.color).filter((c): c is string => Boolean(c))),
-).sort();
+const SKELETON_COUNT = 12;
 
-const AVAILABLE_SIZES = Array.from(
-  new Set(allProducts.map((p) => p.size).filter((s): s is string => Boolean(s))),
-).sort();
-
-function toggleSetValue<T>(set: Set<T>, value: T): Set<T> {
-  const next = new Set(set);
-  if (next.has(value)) next.delete(value);
-  else next.add(value);
-  return next;
-}
-
-function FilterGroup({
-  title,
-  defaultOpen = true,
-  children,
-}: {
-  title: string;
-  defaultOpen?: boolean;
-  children: ReactNode;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-
-  return (
-    <div className="border-t border-(--color-border) py-4 first:border-t-0 first:pt-0">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between text-sm font-semibold text-(--color-dark)"
-      >
-        {title}
-        <ChevronDown size={15} className={`transition-transform ${open ? "rotate-180" : ""}`} />
-      </button>
-      {open && <div className="mt-2.5 flex flex-col gap-2">{children}</div>}
-    </div>
-  );
+// The upstream 1688 API accepts a sort param but doesn't reliably honor it
+// (confirmed: it echoes the param back but returns unsorted results), so we
+// sort client-side using the price data we already have instead of trusting it.
+function sortItems(items: SourcingItem[], sortValue: SortValue): SourcingItem[] {
+  if (sortValue === "default") return items;
+  const withPrice = (item: SourcingItem) => parseFloat(item.price ?? "") || 0;
+  const sorted = [...items];
+  if (sortValue === "price_asc") sorted.sort((a, b) => withPrice(a) - withPrice(b));
+  else if (sortValue === "price_desc") sorted.sort((a, b) => withPrice(b) - withPrice(a));
+  return sorted;
 }
 
 export function ProductGrid({ lang }: ProductGridProps) {
-  const { format } = useCurrency();
-
   const [query, setQuery] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set());
-  const [selectedBadges, setSelectedBadges] = useState<Set<Badge>>(new Set());
-  const [selectedColors, setSelectedColors] = useState<Set<string>>(new Set());
-  const [selectedSizes, setSelectedSizes] = useState<Set<string>>(new Set());
-  const [minRating, setMinRating] = useState(0);
-  const [priceBucket, setPriceBucket] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<SortValue>("featured");
+  const [sort, setSort] = useState<SortValue>("default");
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeSubcategory, setActiveSubcategory] = useState<string | null>(null);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [activeKeyword, setActiveKeyword] = useState("");
 
-  const hasActiveFilters =
-    query !== "" ||
-    selectedCategories.size > 0 ||
-    selectedBadges.size > 0 ||
-    selectedColors.size > 0 ||
-    selectedSizes.size > 0 ||
-    minRating > 0 ||
-    priceBucket !== null;
+  const [items, setItems] = useState<SourcingItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
-  const resetFilters = () => {
+  const runSearch = useCallback(async (q: string, sortValue: SortValue) => {
+    setLoading(true);
+    const res = await search1688Action({ q, page: 1, sort: sortValue });
+    setItems(sortItems(res.data?.items ?? [], sortValue));
+    setHasMore(res.data?.hasMore ?? false);
+    setPage(1);
+    setLoading(false);
+  }, []);
+
+  // Load the first category by default on first render.
+  useEffect(() => {
+    const first = CATEGORIES[0];
+    setActiveCategory(first.id);
+    setExpandedCategory(first.id);
+    setActiveKeyword(first.keyword);
+    runSearch(first.keyword, "default");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleCategoryClick = (category: Category) => {
+    setActiveCategory(category.id);
+    setActiveSubcategory(null);
+    setExpandedCategory(category.id);
+    setActiveKeyword(category.keyword);
     setQuery("");
-    setSelectedCategories(new Set());
-    setSelectedBadges(new Set());
-    setSelectedColors(new Set());
-    setSelectedSizes(new Set());
-    setMinRating(0);
-    setPriceBucket(null);
+    runSearch(category.keyword, sort);
   };
 
-  const filtered = useMemo(() => {
-    const bucket = PRICE_BUCKETS.find((b) => b.id === priceBucket);
+  const handleSubcategoryClick = (category: Category, sub: Category["subcategories"][number]) => {
+    setActiveCategory(category.id);
+    setActiveSubcategory(sub.id);
+    setActiveKeyword(sub.keyword);
+    setQuery("");
+    runSearch(sub.keyword, sort);
+  };
 
-    const result = allProducts.filter((p) => {
-      if (query && !p.name.toLowerCase().includes(query.toLowerCase())) return false;
-      if (selectedCategories.size > 0) {
-        const inSelected = Array.from(selectedCategories).some((href) => p.href.startsWith(href));
-        if (!inSelected) return false;
-      }
-      if (selectedBadges.size > 0 && (!p.badge || !selectedBadges.has(p.badge))) return false;
-      if (selectedColors.size > 0 && (!p.color || !selectedColors.has(p.color))) return false;
-      if (selectedSizes.size > 0 && (!p.size || !selectedSizes.has(p.size))) return false;
-      if (minRating > 0 && p.rating < minRating) return false;
-      if (bucket) {
-        if (bucket.min !== undefined && p.price < bucket.min) return false;
-        if (bucket.max !== undefined && p.price >= bucket.max) return false;
-      }
-      return true;
-    });
+  const handleSearchSubmit = () => {
+    if (!query.trim()) return;
+    setActiveCategory(null);
+    setActiveSubcategory(null);
+    setActiveKeyword(query.trim());
+    runSearch(query.trim(), sort);
+  };
 
-    const sorted = [...result];
-    if (sortBy === "price-asc") sorted.sort((a, b) => a.price - b.price);
-    else if (sortBy === "price-desc") sorted.sort((a, b) => b.price - a.price);
-    else if (sortBy === "rating-desc") sorted.sort((a, b) => b.rating - a.rating);
-    return sorted;
-  }, [query, selectedCategories, selectedBadges, selectedColors, selectedSizes, minRating, priceBucket, sortBy]);
+  const handleSortChange = (value: SortValue) => {
+    setSort(value);
+    runSearch(activeKeyword, value);
+  };
+
+  const handleLoadMore = async () => {
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    const res = await search1688Action({ q: activeKeyword, page: nextPage, sort });
+    setItems((prev) => sortItems([...prev, ...(res.data?.items ?? [])], sort));
+    setHasMore(res.data?.hasMore ?? false);
+    setPage(nextPage);
+    setLoadingMore(false);
+  };
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_8fr]">
-      {/* Filters — ~20% */}
+      {/* Categories — left side */}
       <aside className="lg:sticky lg:top-20 lg:h-fit">
         <div className="rounded-(--radius-lg) border border-(--color-border) bg-(--color-surface) p-4">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="inline-flex items-center gap-1.5 text-base font-bold text-(--color-dark)">
-              <SlidersHorizontal size={16} />
-              Filters
-            </h3>
-            {hasActiveFilters && (
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="text-xs font-medium text-(--color-primary) hover:underline"
-              >
-                Clear all
-              </button>
-            )}
+          <h3 className="px-1 text-base font-bold text-(--color-dark)">Categories</h3>
+          <div className="mt-3 flex flex-col gap-0.5">
+            {CATEGORIES.map((category) => {
+              const isExpanded = expandedCategory === category.id;
+              const isActive = activeCategory === category.id && !activeSubcategory;
+              const Icon = category.icon;
+
+              return (
+                <div key={category.id}>
+                  <button
+                    type="button"
+                    onClick={() => handleCategoryClick(category)}
+                    className={`flex w-full items-center justify-start gap-2 rounded-(--radius-md) border-s-2 py-2.5 ps-2.5 pe-2 text-start text-sm font-medium transition-colors ${
+                      isActive
+                        ? "border-(--color-primary) bg-(--color-primary-faint) text-(--color-primary)"
+                        : "border-transparent text-(--color-dark) hover:bg-(--color-bg)"
+                    }`}
+                  >
+                    <Icon size={17} className="w-5 shrink-0" />
+                    <span className="flex-1 truncate">{category.label}</span>
+                    <ChevronDown
+                      size={14}
+                      className={`shrink-0 text-(--color-text-light) transition-transform ${
+                        isExpanded ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {isExpanded && (
+                    <div className="mt-0.5 mb-1 flex flex-col gap-0.5">
+                      {category.subcategories.map((sub) => (
+                        <button
+                          key={sub.id}
+                          type="button"
+                          onClick={() => handleSubcategoryClick(category, sub)}
+                          className={`flex w-full items-center justify-start truncate rounded-(--radius-md) py-1.5 ps-10 pe-2 text-start text-sm transition-colors ${
+                            activeSubcategory === sub.id
+                              ? "font-semibold text-(--color-primary)"
+                              : "text-(--color-text-muted) hover:bg-(--color-bg) hover:text-(--color-dark)"
+                          }`}
+                        >
+                          {sub.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
-
-          <FilterGroup title="Category">
-            {navCategories.map((category) => (
-              <label
-                key={category.href}
-                className="flex items-center gap-2 text-sm text-(--color-text-muted)"
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedCategories.has(category.href)}
-                  onChange={() =>
-                    setSelectedCategories((prev) => toggleSetValue(prev, category.href))
-                  }
-                />
-                <category.icon size={15} className="shrink-0 text-(--color-text-light)" />
-                <span className="truncate">{category.label}</span>
-              </label>
-            ))}
-          </FilterGroup>
-
-          <FilterGroup title="Price">
-            {PRICE_BUCKETS.map((bucket) => (
-              <label key={bucket.id} className="flex items-center gap-2 text-sm text-(--color-text-muted)">
-                <input
-                  type="radio"
-                  name="price-bucket"
-                  checked={priceBucket === bucket.id}
-                  onChange={() => setPriceBucket(bucket.id)}
-                />
-                {bucket.min === undefined && `Under ${format(bucket.max!)}`}
-                {bucket.min !== undefined &&
-                  bucket.max !== undefined &&
-                  `${format(bucket.min)} - ${format(bucket.max)}`}
-                {bucket.min !== undefined && bucket.max === undefined && `${format(bucket.min)} & Above`}
-              </label>
-            ))}
-          </FilterGroup>
-
-          <FilterGroup title="Color">
-            {AVAILABLE_COLORS.map((color) => (
-              <label key={color} className="flex items-center gap-2 text-sm text-(--color-text-muted)">
-                <input
-                  type="checkbox"
-                  checked={selectedColors.has(color)}
-                  onChange={() => setSelectedColors((prev) => toggleSetValue(prev, color))}
-                />
-                <span
-                  aria-hidden="true"
-                  className="h-3.5 w-3.5 shrink-0 rounded-full border border-(--color-border)"
-                  style={{ background: colorSwatches[color] ?? "transparent" }}
-                />
-                {color}
-              </label>
-            ))}
-          </FilterGroup>
-
-          {AVAILABLE_SIZES.length > 0 && (
-            <FilterGroup title="Size" defaultOpen={false}>
-              {AVAILABLE_SIZES.map((size) => (
-                <label key={size} className="flex items-center gap-2 text-sm text-(--color-text-muted)">
-                  <input
-                    type="checkbox"
-                    checked={selectedSizes.has(size)}
-                    onChange={() => setSelectedSizes((prev) => toggleSetValue(prev, size))}
-                  />
-                  {size}
-                </label>
-              ))}
-            </FilterGroup>
-          )}
-
-          <FilterGroup title="Rating" defaultOpen={false}>
-            {RATING_OPTIONS.map((r) => (
-              <label key={r} className="flex items-center gap-2 text-sm text-(--color-text-muted)">
-                <input
-                  type="radio"
-                  name="min-rating"
-                  checked={minRating === r}
-                  onChange={() => setMinRating(r)}
-                />
-                {r}★ &amp; up
-              </label>
-            ))}
-          </FilterGroup>
-
-          <FilterGroup title="Deals" defaultOpen={false}>
-            {BADGE_OPTIONS.map((option) => (
-              <label key={option.value} className="flex items-center gap-2 text-sm text-(--color-text-muted)">
-                <input
-                  type="checkbox"
-                  checked={selectedBadges.has(option.value)}
-                  onChange={() => setSelectedBadges((prev) => toggleSetValue(prev, option.value))}
-                />
-                {option.label}
-              </label>
-            ))}
-          </FilterGroup>
         </div>
       </aside>
 
-      {/* Search, sort, and results — ~80% */}
+      {/* Search + results — right side */}
       <div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative flex-1 sm:max-w-sm">
-            <Search
-              size={16}
-              className="absolute start-3 top-1/2 -translate-y-1/2 text-(--color-text-light)"
-            />
+          <select
+            aria-label="Sort by"
+            value={sort}
+            onChange={(e) => handleSortChange(e.target.value as SortValue)}
+            className="!w-auto shrink-0 text-sm"
+          >
+            {SORT_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+
+          <form
+            role="search"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearchSubmit();
+            }}
+            className="flex h-[46px] items-stretch overflow-hidden rounded-full border border-(--color-border) bg-(--color-bg) shadow-(--shadow-sm) transition-all focus-within:border-(--color-primary) focus-within:bg-(--color-surface) focus-within:shadow-[0_0_0_3px_var(--color-primary-faint)] sm:w-72"
+          >
+            <label htmlFor="product-search" className="sr-only">
+              Search products
+            </label>
             <input
+              id="product-search"
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search products..."
-              className="w-full rounded-(--radius-md) border border-(--color-border) bg-(--color-bg) py-2.5 ps-9 pe-3 text-sm outline-none transition-colors focus:border-(--color-primary)"
+              className="w-full min-w-0 border-0 bg-transparent px-4 text-sm shadow-none outline-none placeholder:text-(--color-text-light)"
             />
-          </div>
-
-          <div className="flex shrink-0 items-center gap-3">
-            <span className="text-sm text-(--color-text-muted)">
-              {filtered.length} {filtered.length === 1 ? "product" : "products"}
-            </span>
-            <select
-              aria-label="Sort by"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortValue)}
-              className="!w-auto text-sm"
+            <button
+              type="submit"
+              aria-label="Search"
+              className="btn-primary me-1.5 shrink-0 self-center rounded-full px-4"
             >
-              {SORT_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+              <Search size={16} />
+            </button>
+          </form>
         </div>
 
-        {filtered.length > 0 ? (
+        {loading && (
           <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {filtered.map(({ icon: Icon, ...product }) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                lang={lang}
-                icon={
-                  <Icon
-                    aria-hidden="true"
-                    strokeWidth={1.25}
-                    size={64}
-                    className="absolute inset-0 m-auto text-white/90 transition-transform duration-300 group-hover:scale-110"
-                  />
-                }
-              />
+            {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+              <div key={i} className="overflow-hidden rounded-(--radius-lg) border border-(--color-border)">
+                <div className="aspect-square animate-pulse bg-(--color-border)" />
+                <div className="space-y-2 p-3">
+                  <div className="h-3.5 w-full animate-pulse rounded bg-(--color-border)" />
+                  <div className="h-3.5 w-2/3 animate-pulse rounded bg-(--color-border)" />
+                  <div className="h-4 w-1/3 animate-pulse rounded bg-(--color-border)" />
+                </div>
+              </div>
             ))}
           </div>
-        ) : (
+        )}
+
+        {!loading && items.length === 0 && (
           <div className="mt-6 flex flex-col items-center gap-3 rounded-(--radius-lg) border border-dashed border-(--color-border) py-16 text-center">
-            <p className="text-(--color-text-muted)">No products match your filters.</p>
-            <button type="button" onClick={resetFilters} className="btn-outline btn-sm">
-              Clear filters
+            <p className="text-(--color-text-muted)">No products found.</p>
+          </div>
+        )}
+
+        {!loading && items.length > 0 && (
+          <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {items.map((item, index) => (
+              <Link
+                key={`${item.id}-${index}`}
+                href={`/${lang}/product/1688/${item.id}`}
+                className="group block overflow-hidden rounded-(--radius-lg) border border-(--color-border) bg-(--color-surface) transition-shadow hover:shadow-lg"
+              >
+                <div className="relative aspect-square overflow-hidden bg-(--color-bg)">
+                  {item.image ? (
+                    <Image
+                      src={item.image}
+                      alt={item.titleEn || "Product"}
+                      fill
+                      unoptimized
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-(--color-text-light)">
+                      <Package size={48} strokeWidth={1.25} />
+                    </div>
+                  )}
+                </div>
+                <div className="p-3">
+                  <h3 className="line-clamp-2 text-sm font-semibold text-(--color-dark)">
+                    {item.titleEn || "Untitled product"}
+                  </h3>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="price">{item.price ? `¥${item.price}` : "—"}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {!loading && items.length > 0 && hasMore && (
+          <div className="mt-8 flex justify-center">
+            <button
+              type="button"
+              onClick={handleLoadMore}
+              disabled={loadingMore}
+              className="btn-outline inline-flex items-center gap-2 disabled:opacity-60"
+            >
+              {loadingMore && <Loader2 size={16} className="animate-spin" />}
+              {loadingMore ? "Loading..." : "Load More"}
             </button>
           </div>
         )}
