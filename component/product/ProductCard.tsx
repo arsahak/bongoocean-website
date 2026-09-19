@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { Star } from "lucide-react";
-import type { ReactNode } from "react";
 import type { Product } from "@/app/data/products";
 import type { Locale } from "@/app/i18n-config";
 import { useCurrency } from "@/component/providers/CurrencyProvider";
+import { Star } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import type { ReactNode } from "react";
 
 const badgeClass: Record<NonNullable<Product["badge"]>, string> = {
   new: "badge-success",
@@ -23,24 +24,51 @@ interface ProductCardProps {
 export function ProductCard({ product, icon, lang }: ProductCardProps) {
   const { format } = useCurrency();
 
+  const discountPercent = product.originalPrice
+    ? Math.round((1 - product.price / product.originalPrice) * 100)
+    : null;
+
   return (
     <Link
       href={`/${lang}/product/${product.id}`}
-      className="group block overflow-hidden rounded-(--radius-lg) border border-(--color-border) bg-(--color-surface) transition-shadow hover:shadow-lg"
+      className="group block overflow-hidden rounded-(--radius-lg) border border-(--color-border) bg-(--color-surface) transition-all duration-300 hover:-translate-y-0.5 hover:border-(--color-primary)/30 hover:shadow-lg"
     >
-      <div className={`relative aspect-square overflow-hidden bg-linear-to-br ${product.gradient}`}>
+      <div
+        className={`relative aspect-square overflow-hidden ${
+          product.image ? "bg-white" : `bg-linear-to-br ${product.gradient}`
+        }`}
+      >
         {product.badge && (
-          <span className={`badge ${badgeClass[product.badge]} absolute start-2 top-2 z-10`}>
-            {product.badge}
+          <span
+            className={`badge ${badgeClass[product.badge]} absolute start-2 top-2 z-10 shadow-sm`}
+          >
+            {product.badge === "sale" && discountPercent
+              ? `-${discountPercent}%`
+              : product.badge}
           </span>
         )}
-        {icon}
+        {product.image ? (
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            unoptimized
+            className="object-contain p-3 transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          icon
+        )}
       </div>
 
-      <div className="p-3">
+      <div className="bg-(--color-bg) p-3">
         <div className="flex items-center gap-1 text-xs text-(--color-text-muted)">
-          <Star size={13} className="fill-(--color-accent) text-(--color-accent)" />
-          <span className="font-medium text-(--color-dark)">{product.rating}</span>
+          <Star
+            size={13}
+            className="fill-(--color-accent) text-(--color-accent)"
+          />
+          <span className="font-medium text-(--color-dark)">
+            {product.rating}
+          </span>
           <span aria-hidden="true">·</span>
           <span className="truncate">{product.sold}</span>
         </div>
@@ -52,7 +80,9 @@ export function ProductCard({ product, icon, lang }: ProductCardProps) {
         <div className="mt-2 flex items-baseline gap-2">
           <span className="price">{format(product.price)}</span>
           {product.originalPrice && (
-            <span className="price-original">{format(product.originalPrice)}</span>
+            <span className="price-original">
+              {format(product.originalPrice)}
+            </span>
           )}
         </div>
       </div>

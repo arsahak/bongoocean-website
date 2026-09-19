@@ -302,7 +302,7 @@ button {
   font-weight: 600;
   cursor: pointer;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   padding: 0.625rem 1.25rem;
   transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
   display: inline-flex;
@@ -320,16 +320,21 @@ button:disabled {
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
+  background-color: #0a0a0a;
   color: #ffffff;
+  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
 }
 .btn-primary:hover {
-  background-color: var(--color-primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(61, 39, 232, 0.35);
+  background-color: rgba(10, 10, 10, 0.9);
+  transform: none;
+  box-shadow: none;
 }
 .btn-primary:active {
-  transform: translateY(0);
+  transform: none;
 }
 
 .btn-secondary {
@@ -389,14 +394,14 @@ input,
 textarea,
 select {
   font-family: var(--font-body);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   color: var(--color-text);
   background-color: var(--color-surface);
-  border: 1.5px solid var(--color-border);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 0.625rem 0.875rem;
+  padding: 0.5rem 0.75rem;
   width: 100%;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   outline: none;
   line-height: 1.5;
 }
@@ -404,8 +409,17 @@ select {
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(61, 39, 232, 0.12);
+  border-color: var(--color-dark);
+  background-color: var(--color-surface);
+  box-shadow: none;
+  outline: none;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 input::placeholder,
@@ -727,5 +741,55 @@ dialog::backdrop {
   color: var(--color-text-muted);
   max-width: 60ch;
 }
+
+/* Renders a product's admin-authored "overview" HTML (from the dashboard's
+   rich-text editor) with sane defaults — headings, paragraphs, lists, and
+   tables all show up readable instead of losing their spacing. */
+.rich-content {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+.rich-content > :first-child { margin-top: 0; }
+.rich-content > :last-child { margin-bottom: 0; }
+
+.rich-content p { margin-block: 0.75rem; }
+
+.rich-content h1, .rich-content h2, .rich-content h3,
+.rich-content h4, .rich-content h5, .rich-content h6 {
+  margin-block: 1.25rem 0.5rem;
+  color: var(--color-dark);
+}
+
+.rich-content ul, .rich-content ol {
+  margin-block: 0.75rem;
+  padding-inline-start: 1.25rem;
+}
+.rich-content ul { list-style: disc; }
+.rich-content ol { list-style: decimal; }
+.rich-content li { margin-block: 0.25rem; }
+
+.rich-content a { color: var(--color-primary); text-decoration: underline; }
+
+.rich-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  margin-block: 0.75rem;
+}
+
+.rich-content table {
+  width: 100% !important;
+  border-collapse: collapse;
+  margin-block: 1rem;
+  font-size: 0.875rem;
+}
+.rich-content th, .rich-content td {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0.75rem;
+  text-align: start;
+}
+.rich-content th { background-color: var(--color-bg); color: var(--color-dark); }
 
 } /* end @layer base */

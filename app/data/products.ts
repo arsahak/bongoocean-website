@@ -26,6 +26,7 @@ export interface Product {
   id: string;
   name: string;
   href: string;
+  image?: string;
   price: number;
   originalPrice?: number;
   rating: number;
@@ -70,7 +71,7 @@ export const featuredProducts: Product[] = [
   },
   {
     id: "ultrabook-14",
-    name: "UltraBook 14\" Laptop, 16GB RAM",
+    name: 'UltraBook 14" Laptop, 16GB RAM',
     href: "/category/electronics/laptops",
     price: 899,
     rating: 4.7,
