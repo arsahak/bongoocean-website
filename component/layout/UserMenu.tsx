@@ -75,14 +75,14 @@ export function UserMenu({ user, lang, dict, className = "" }: UserMenuProps) {
             )}
           </div>
         )}
-        <Link
+        {/* <Link
           href={`/${lang}/account`}
           onClick={() => setOpen(false)}
           className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm transition-colors hover:bg-(--color-bg)"
         >
           <User size={15} />
           {dict.nav.profile}
-        </Link>
+        </Link> */}
         <Link
           href={`/${lang}/orders`}
           onClick={() => setOpen(false)}
@@ -91,14 +91,14 @@ export function UserMenu({ user, lang, dict, className = "" }: UserMenuProps) {
           <Package size={15} />
           {dict.nav.orders}
         </Link>
-        <Link
+        {/* <Link
           href={`/${lang}/account/settings`}
           onClick={() => setOpen(false)}
           className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm transition-colors hover:bg-(--color-bg)"
         >
           <Settings size={15} />
           {dict.nav.settings}
-        </Link>
+        </Link> */}
         <div className="my-1 border-t border-(--color-border)" />
         <form action={signoutAction}>
           <button
