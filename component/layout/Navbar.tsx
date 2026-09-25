@@ -2,17 +2,17 @@
 
 import { signoutAction } from "@/app/actions/auth";
 import { navCategories } from "@/app/data/categories";
-import type { Dictionary } from "@/app/dictionaries";
 import { formatPhoneDisplay } from "@/app/data/phone-countries";
+import type { Dictionary } from "@/app/dictionaries";
 import { getDirection, type Locale } from "@/app/i18n-config";
 import { CurrencySwitcher } from "@/component/common/CurrencySwitcher";
 import { LanguageSwitcher } from "@/component/common/LanguageSwitcher";
 import { UserMenu } from "@/component/layout/UserMenu";
-import { useCart } from "@/component/providers/CartProvider";
-import { useWishlist } from "@/component/providers/WishlistProvider";
 import { Dropdown } from "@/component/motion/Dropdown";
 import { MobileDrawer } from "@/component/motion/MobileDrawer";
 import { megaMenuVariants } from "@/component/motion/variants";
+import { useCart } from "@/component/providers/CartProvider";
+import { useWishlist } from "@/component/providers/WishlistProvider";
 import {
   Camera,
   ChevronDown,
@@ -21,7 +21,6 @@ import {
   LogOut,
   Menu,
   Package,
-  Settings,
   ShoppingCart,
   User,
   X,
@@ -424,14 +423,14 @@ const Navbar = ({ dict, user }: NavbarProps) => {
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-2">
-                <Link
+                {/* <Link
                   href={`/${lang}/account`}
                   onClick={() => setMobileOpen(false)}
                   className="btn-outline btn-sm !px-2"
                 >
                   <User size={16} />
                   {dict.nav.profile}
-                </Link>
+                </Link> */}
                 <Link
                   href={`/${lang}/orders`}
                   onClick={() => setMobileOpen(false)}
@@ -440,14 +439,14 @@ const Navbar = ({ dict, user }: NavbarProps) => {
                   <Package size={16} />
                   {dict.nav.orders}
                 </Link>
-                <Link
+                {/* <Link
                   href={`/${lang}/account/settings`}
                   onClick={() => setMobileOpen(false)}
                   className="btn-outline btn-sm !px-2"
                 >
                   <Settings size={16} />
                   {dict.nav.settings}
-                </Link>
+                </Link> */}
               </div>
               <form action={signoutAction}>
                 <button
