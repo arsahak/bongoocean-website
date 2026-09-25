@@ -157,6 +157,7 @@ export function FeaturedProducts({ dict, lang }: FeaturedProductsProps) {
               return (
                 <FadeIn key={product.id} delay={Math.min(i, 4) * 0.05}>
                   <ProductCard
+                    addToCartLabel={dict.common.add_to_cart}
                     product={product}
                     lang={lang}
                     icon={

@@ -1,6 +1,8 @@
+import { CartProvider } from "@/component/providers/CartProvider";
 import { CurrencyProvider } from "@/component/providers/CurrencyProvider";
 import { ThemeProvider } from "@/component/providers/ThemeProvider";
 import { ThemeScript } from "@/component/providers/ThemeScript";
+import { WishlistProvider } from "@/component/providers/WishlistProvider";
 import type { Metadata } from "next";
 import { DM_Sans, Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { notFound } from "next/navigation";
@@ -134,7 +136,11 @@ export default async function RootLayout({
       </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ThemeProvider>
-          <CurrencyProvider>{children}</CurrencyProvider>
+          <CurrencyProvider>
+            <CartProvider>
+              <WishlistProvider>{children}</WishlistProvider>
+            </CartProvider>
+          </CurrencyProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -230,6 +230,7 @@ export default async function ProductDetailPage({
           <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {related.map(({ cardProduct, Icon: RelatedIcon }) => (
               <ProductCard
+                addToCartLabel={dict.common.add_to_cart}
                 key={cardProduct.id}
                 product={cardProduct}
                 lang={lang}

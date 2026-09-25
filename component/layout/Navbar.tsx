@@ -1,10 +1,15 @@
 "use client";
 
+import { signoutAction } from "@/app/actions/auth";
 import { navCategories } from "@/app/data/categories";
 import type { Dictionary } from "@/app/dictionaries";
+import { formatPhoneDisplay } from "@/app/data/phone-countries";
 import { getDirection, type Locale } from "@/app/i18n-config";
 import { CurrencySwitcher } from "@/component/common/CurrencySwitcher";
 import { LanguageSwitcher } from "@/component/common/LanguageSwitcher";
+import { UserMenu } from "@/component/layout/UserMenu";
+import { useCart } from "@/component/providers/CartProvider";
+import { useWishlist } from "@/component/providers/WishlistProvider";
 import { Dropdown } from "@/component/motion/Dropdown";
 import { MobileDrawer } from "@/component/motion/MobileDrawer";
 import { megaMenuVariants } from "@/component/motion/variants";
@@ -13,7 +18,10 @@ import {
   ChevronDown,
   Heart,
   LayoutGrid,
+  LogOut,
   Menu,
+  Package,
+  Settings,
   ShoppingCart,
   User,
   X,
@@ -23,14 +31,25 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
-interface NavbarProps {
-  dict: Dictionary;
+export interface NavbarUser {
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  image?: string | null;
 }
 
-const Navbar = ({ dict }: NavbarProps) => {
+interface NavbarProps {
+  dict: Dictionary;
+  user: NavbarUser | null;
+}
+
+const Navbar = ({ dict, user }: NavbarProps) => {
   const params = useParams<{ lang: Locale }>();
   const lang = params?.lang ?? "en";
   const dir = getDirection(lang);
+  const displayPhone = user?.phone ? formatPhoneDisplay(user.phone) : "";
+  const { count: cartCount } = useCart();
+  const { count: wishlistCount } = useWishlist();
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [shopMenuOpen, setShopMenuOpen] = useState(false);
@@ -133,11 +152,16 @@ const Navbar = ({ dict }: NavbarProps) => {
 
         <div className="ms-auto flex items-center gap-1 sm:gap-2">
           <Link
-            href={`/${lang}/wishlist`}
+            href={`/${lang}/wish-list`}
             aria-label={dict.nav.wishlist}
-            className="btn-ghost hidden !p-2 sm:flex rounded"
+            className="btn-ghost relative hidden !p-2 sm:flex rounded"
           >
             <Heart size={20} />
+            {wishlistCount > 0 && (
+              <span className="absolute right-0.5 top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-(--color-secondary) text-[9px] font-bold text-white">
+                {wishlistCount}
+              </span>
+            )}
           </Link>
 
           <Link
@@ -146,18 +170,29 @@ const Navbar = ({ dict }: NavbarProps) => {
             className="btn-ghost relative !p-2 rounded"
           >
             <ShoppingCart size={20} />
-            <span className="absolute right-0.5 top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-(--color-secondary) text-[9px] font-bold text-white">
-              0
-            </span>
+            {cartCount > 0 && (
+              <span className="absolute right-0.5 top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-(--color-secondary) text-[9px] font-bold text-white">
+                {cartCount}
+              </span>
+            )}
           </Link>
 
-          <Link
-            href={`/${lang}/sign-in`}
-            aria-label={dict.nav.account}
-            className="btn-ghost hidden !p-2 sm:flex rounded"
-          >
-            <User size={20} />
-          </Link>
+          {user ? (
+            <UserMenu
+              user={user}
+              lang={lang}
+              dict={dict}
+              className="hidden sm:block"
+            />
+          ) : (
+            <Link
+              href={`/${lang}/sign-in`}
+              aria-label={dict.nav.account}
+              className="btn-ghost hidden !p-2 sm:flex rounded"
+            >
+              <User size={20} />
+            </Link>
+          )}
         </div>
       </div>
 
@@ -341,12 +376,13 @@ const Navbar = ({ dict }: NavbarProps) => {
         <div className="mt-auto flex flex-col gap-3 border-t border-(--color-border) p-4">
           <div className="grid grid-cols-2 gap-2">
             <Link
-              href={`/${lang}/wishlist`}
+              href={`/${lang}/wish-list`}
               onClick={() => setMobileOpen(false)}
               className="btn-outline btn-sm"
             >
               <Heart size={16} />
               {dict.nav.wishlist}
+              {wishlistCount > 0 && ` (${wishlistCount})`}
             </Link>
             <Link
               href={`/${lang}/cart`}
@@ -355,16 +391,84 @@ const Navbar = ({ dict }: NavbarProps) => {
             >
               <ShoppingCart size={16} />
               {dict.nav.cart}
+              {cartCount > 0 && ` (${cartCount})`}
             </Link>
           </div>
-          <Link
-            href={`/${lang}/sign-in`}
-            onClick={() => setMobileOpen(false)}
-            className="btn-primary btn-sm"
-          >
-            <User size={16} />
-            {dict.nav.sign_in}
-          </Link>
+          {user ? (
+            <>
+              <div className="flex items-center gap-3 rounded-(--radius-md) border border-(--color-border) p-3">
+                {user.image ? (
+                  <img
+                    src={user.image}
+                    alt=""
+                    width={44}
+                    height={44}
+                    className="size-11 shrink-0 rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-(--color-primary) text-base font-bold text-white">
+                    {(user.name?.trim() || user.email || displayPhone || "?")
+                      .charAt(0)
+                      .toUpperCase()}
+                  </span>
+                )}
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-(--color-dark)">
+                    {user.name?.trim() || user.email || displayPhone}
+                  </p>
+                  {(user.email || displayPhone) && (
+                    <p className="truncate text-xs text-(--color-text-muted)">
+                      {user.email || displayPhone}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                <Link
+                  href={`/${lang}/account`}
+                  onClick={() => setMobileOpen(false)}
+                  className="btn-outline btn-sm !px-2"
+                >
+                  <User size={16} />
+                  {dict.nav.profile}
+                </Link>
+                <Link
+                  href={`/${lang}/orders`}
+                  onClick={() => setMobileOpen(false)}
+                  className="btn-outline btn-sm !px-2"
+                >
+                  <Package size={16} />
+                  {dict.nav.orders}
+                </Link>
+                <Link
+                  href={`/${lang}/account/settings`}
+                  onClick={() => setMobileOpen(false)}
+                  className="btn-outline btn-sm !px-2"
+                >
+                  <Settings size={16} />
+                  {dict.nav.settings}
+                </Link>
+              </div>
+              <form action={signoutAction}>
+                <button
+                  type="submit"
+                  className="btn-outline btn-sm w-full text-(--color-error)"
+                >
+                  <LogOut size={16} />
+                  {dict.nav.sign_out}
+                </button>
+              </form>
+            </>
+          ) : (
+            <Link
+              href={`/${lang}/sign-in`}
+              onClick={() => setMobileOpen(false)}
+              className="btn-primary btn-sm"
+            >
+              <User size={16} />
+              {dict.nav.sign_in}
+            </Link>
+          )}
         </div>
       </MobileDrawer>
     </header>

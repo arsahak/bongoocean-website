@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  customerSigninAction,
+  customerSignupAction,
+  resendSignupOtpAction,
+  verifySignupOtpAction,
+} from "@/app/actions/auth";
 import type { Dictionary } from "@/app/dictionaries";
 import type { Locale } from "@/app/i18n-config";
 import {
@@ -10,10 +16,12 @@ import {
   EyeOff,
   LockKeyhole,
   Mail,
+  MessageSquare,
+  ShieldCheck,
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 
 type AuthMode = "sign-in" | "sign-up";
 
@@ -21,6 +29,7 @@ interface AuthFormProps {
   mode: AuthMode;
   lang: Locale;
   dict: Dictionary;
+  callbackUrl?: string;
 }
 
 const supplementalCopy: Record<
@@ -34,6 +43,11 @@ const supplementalCopy: Record<
     privacy: string;
     passwordHint: string;
     secureNote: string;
+    otpTitle: string;
+    otpSubtitle: string;
+    otpVerify: string;
+    otpResend: string;
+    otpChangeDetails: string;
   }
 > = {
   en: {
@@ -45,6 +59,11 @@ const supplementalCopy: Record<
     privacy: "Privacy Policy",
     passwordHint: "Use 8 or more characters",
     secureNote: "Your information is protected with secure encryption.",
+    otpTitle: "Verify your account",
+    otpSubtitle: "We sent a 6-digit code to",
+    otpVerify: "Verify & continue",
+    otpResend: "Resend code",
+    otpChangeDetails: "Use a different email or phone",
   },
   bn: {
     google: "Google দিয়ে চালিয়ে যান",
@@ -55,6 +74,11 @@ const supplementalCopy: Record<
     privacy: "গোপনীয়তা নীতি",
     passwordHint: "৮ বা তার বেশি অক্ষর ব্যবহার করুন",
     secureNote: "নিরাপদ এনক্রিপশনে আপনার তথ্য সুরক্ষিত থাকে।",
+    otpTitle: "আপনার অ্যাকাউন্ট যাচাই করুন",
+    otpSubtitle: "আমরা একটি ৬-সংখ্যার কোড পাঠিয়েছি",
+    otpVerify: "যাচাই করে এগিয়ে যান",
+    otpResend: "আবার কোড পাঠান",
+    otpChangeDetails: "ভিন্ন ইমেইল বা ফোন ব্যবহার করুন",
   },
   hi: {
     google: "Google से जारी रखें",
@@ -65,6 +89,11 @@ const supplementalCopy: Record<
     privacy: "गोपनीयता नीति",
     passwordHint: "8 या अधिक अक्षरों का उपयोग करें",
     secureNote: "आपकी जानकारी सुरक्षित एन्क्रिप्शन से संरक्षित है।",
+    otpTitle: "अपना खाता सत्यापित करें",
+    otpSubtitle: "हमने एक 6-अंकीय कोड भेजा है",
+    otpVerify: "सत्यापित करें और जारी रखें",
+    otpResend: "कोड फिर से भेजें",
+    otpChangeDetails: "अलग ईमेल या फ़ोन का उपयोग करें",
   },
   ur: {
     google: "Google کے ساتھ جاری رکھیں",
@@ -75,6 +104,11 @@ const supplementalCopy: Record<
     privacy: "رازداری کی پالیسی",
     passwordHint: "8 یا اس سے زیادہ حروف استعمال کریں",
     secureNote: "آپ کی معلومات محفوظ انکرپشن کے ذریعے محفوظ ہیں۔",
+    otpTitle: "اپنا اکاؤنٹ تصدیق کریں",
+    otpSubtitle: "ہم نے 6 ہندسوں کا کوڈ بھیجا ہے",
+    otpVerify: "تصدیق کریں اور جاری رکھیں",
+    otpResend: "کوڈ دوبارہ بھیجیں",
+    otpChangeDetails: "مختلف ای میل یا فون استعمال کریں",
   },
   ar: {
     google: "المتابعة باستخدام Google",
@@ -85,6 +119,11 @@ const supplementalCopy: Record<
     privacy: "سياسة الخصوصية",
     passwordHint: "استخدم 8 أحرف أو أكثر",
     secureNote: "معلوماتك محمية بتشفير آمن.",
+    otpTitle: "تحقق من حسابك",
+    otpSubtitle: "أرسلنا رمزًا مكونًا من 6 أرقام إلى",
+    otpVerify: "تحقق وتابع",
+    otpResend: "إعادة إرسال الرمز",
+    otpChangeDetails: "استخدم بريدًا إلكترونيًا أو هاتفًا مختلفًا",
   },
   es: {
     google: "Continuar con Google",
@@ -95,6 +134,11 @@ const supplementalCopy: Record<
     privacy: "Política de privacidad",
     passwordHint: "Usa 8 caracteres o más",
     secureNote: "Tu información está protegida con cifrado seguro.",
+    otpTitle: "Verifica tu cuenta",
+    otpSubtitle: "Enviamos un código de 6 dígitos a",
+    otpVerify: "Verificar y continuar",
+    otpResend: "Reenviar código",
+    otpChangeDetails: "Usar otro correo o teléfono",
   },
   zh: {
     google: "使用 Google 继续",
@@ -105,6 +149,11 @@ const supplementalCopy: Record<
     privacy: "隐私政策",
     passwordHint: "请使用至少 8 个字符",
     secureNote: "你的信息受到安全加密保护。",
+    otpTitle: "验证您的账户",
+    otpSubtitle: "我们已发送一个6位验证码至",
+    otpVerify: "验证并继续",
+    otpResend: "重新发送验证码",
+    otpChangeDetails: "使用其他邮箱或电话",
   },
   fr: {
     google: "Continuer avec Google",
@@ -115,29 +164,101 @@ const supplementalCopy: Record<
     privacy: "Politique de confidentialité",
     passwordHint: "Utilisez au moins 8 caractères",
     secureNote: "Vos informations sont protégées par un chiffrement sécurisé.",
+    otpTitle: "Vérifiez votre compte",
+    otpSubtitle: "Nous avons envoyé un code à 6 chiffres à",
+    otpVerify: "Vérifier et continuer",
+    otpResend: "Renvoyer le code",
+    otpChangeDetails: "Utiliser un autre e-mail ou téléphone",
   },
 };
 
-function GoogleMark() {
-  return (
-    <span
-      aria-hidden="true"
-      className="grid size-5 place-items-center rounded-full bg-[conic-gradient(from_-45deg,#4285f4_0_25%,#34a853_0_50%,#fbbc05_0_75%,#ea4335_0)] text-[10px] font-extrabold text-white"
-    >
-      G
-    </span>
-  );
-}
+const OTP_RESEND_COOLDOWN_SECONDS = 60;
 
-export function AuthForm({ mode, lang, dict }: AuthFormProps) {
+export function AuthForm({ mode, lang, dict, callbackUrl: callbackUrlProp }: AuthFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const isSignUp = mode === "sign-up";
   const copy = supplementalCopy[lang];
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  const callbackUrl = callbackUrlProp ?? `/${lang}`;
+  // React resets uncontrolled form fields right after a successful action
+  // submission, so the password can't be read off the DOM afterward — track
+  // it imperatively via onChange instead.
+  const passwordDraftRef = useRef("");
+
+  const [signinState, signinFormAction, signinPending] = useActionState(
+    customerSigninAction,
+    { ok: false, error: "" },
+  );
+  const [signupState, signupFormAction, signupPending] = useActionState(
+    customerSignupAction,
+    { ok: false, error: "" },
+  );
+  const [verifyState, verifyFormAction, verifyPending] = useActionState(
+    verifySignupOtpAction,
+    { ok: false, error: "" },
+  );
+
+  const [otpStep, setOtpStep] = useState(false);
+  const [pendingIdentifier, setPendingIdentifier] = useState("");
+  const [pendingPassword, setPendingPassword] = useState("");
+  const [pendingChannel, setPendingChannel] = useState<"email" | "phone">("email");
+
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendPending, setResendPending] = useState(false);
+  const [resendMessage, setResendMessage] = useState("");
+  const [resendError, setResendError] = useState("");
+
+  useEffect(() => {
+    if (signinState.ok) {
+      // Full page navigation so server components re-render with the fresh
+      // session cookie instead of serving a stale RSC cache.
+      window.location.href = signinState.redirectTo || callbackUrl;
+    }
+  }, [signinState, callbackUrl]);
+
+  useEffect(() => {
+    if (signupState.ok && signupState.otpRequired) {
+      setPendingIdentifier(signupState.identifier);
+      setPendingChannel(signupState.channel);
+      setPendingPassword(passwordDraftRef.current);
+      setOtpStep(true);
+      setResendCooldown(OTP_RESEND_COOLDOWN_SECONDS);
+    }
+  }, [signupState]);
+
+  useEffect(() => {
+    if (verifyState.ok) {
+      window.location.href = verifyState.redirectTo || callbackUrl;
+    }
+  }, [verifyState, callbackUrl]);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCooldown((seconds) => Math.max(0, seconds - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
+
+  async function handleResend() {
+    setResendPending(true);
+    setResendError("");
+    setResendMessage("");
+    const result = await resendSignupOtpAction(pendingIdentifier);
+    setResendPending(false);
+    if (result.ok) {
+      setResendCooldown(OTP_RESEND_COOLDOWN_SECONDS);
+      setResendMessage(result.message ?? "Code resent.");
+    } else {
+      setResendError(result.error ?? "Could not resend the code.");
+    }
   }
+
+  const showOtpStep = isSignUp && otpStep;
+  const signupError = !signupState.ok ? signupState.error : undefined;
+  const detailsError = isSignUp ? signupError : signinState.error;
+  const detailsPending = isSignUp ? signupPending : signinPending;
 
   return (
     <div className="w-full max-w-[480px]">
@@ -147,30 +268,122 @@ export function AuthForm({ mode, lang, dict }: AuthFormProps) {
           {isSignUp ? dict.nav.sign_up : dict.nav.sign_in}
         </span>
         <h1 className="text-[clamp(2rem,4vw,2.75rem)] font-extrabold tracking-[-0.045em] text-(--color-dark)">
-          {isSignUp ? dict.auth.sign_up_title : dict.auth.sign_in_title}
+          {showOtpStep
+            ? copy.otpTitle
+            : isSignUp
+              ? dict.auth.sign_up_title
+              : dict.auth.sign_in_title}
         </h1>
         <p className="mt-3 text-base leading-7 text-(--color-text-muted)">
-          {isSignUp ? dict.auth.sign_up_subtitle : dict.auth.sign_in_subtitle}
+          {showOtpStep ? (
+            <>
+              {copy.otpSubtitle}{" "}
+              <span className="font-semibold text-(--color-dark)">
+                {pendingIdentifier}
+              </span>{" "}
+              {pendingChannel === "email" ? (
+                <Mail aria-hidden="true" size={14} className="inline align-[-2px]" />
+              ) : (
+                <MessageSquare aria-hidden="true" size={14} className="inline align-[-2px]" />
+              )}
+            </>
+          ) : isSignUp ? (
+            dict.auth.sign_up_subtitle
+          ) : (
+            dict.auth.sign_in_subtitle
+          )}
         </p>
       </div>
 
-      <button
-        type="button"
-        className="flex h-12 w-full items-center justify-center gap-3 rounded-lg border border-(--color-border) bg-(--color-surface) px-4 text-[0.9375rem] font-semibold text-(--color-dark) shadow-(--shadow-sm) transition-colors hover:border-(--color-dark) hover:bg-(--color-bg)"
+      {showOtpStep ? (
+        <form action={verifyFormAction} className="space-y-5 mt-8">
+          <input type="hidden" name="identifier" value={pendingIdentifier} />
+          <input type="hidden" name="password" value={pendingPassword} />
+          <input type="hidden" name="callbackUrl" value={callbackUrl} />
+
+          <div>
+            <label htmlFor="otp">OTP</label>
+            <div className="relative">
+              <ShieldCheck
+                aria-hidden="true"
+                size={18}
+                className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-(--color-text-light)"
+              />
+              <input
+                id="otp"
+                name="otp"
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                placeholder="123456"
+                required
+                autoFocus
+                className="h-12 rounded-lg ps-11 pe-4 tracking-[0.3em] focus:border-(--color-dark) focus:outline-none focus:shadow-none"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between gap-4 text-sm">
+            <button
+              type="button"
+              onClick={() => {
+                setOtpStep(false);
+                setResendMessage("");
+                setResendError("");
+              }}
+              className="font-semibold text-(--color-primary) hover:text-(--color-primary-dark)"
+            >
+              {copy.otpChangeDetails}
+            </button>
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resendPending || resendCooldown > 0}
+              className="font-semibold text-(--color-primary) hover:text-(--color-primary-dark) disabled:cursor-not-allowed disabled:text-(--color-text-light)"
+            >
+              {resendCooldown > 0 ? `${copy.otpResend} (${resendCooldown}s)` : copy.otpResend}
+            </button>
+          </div>
+
+          {resendMessage && (
+            <p className="text-sm font-medium text-(--color-success)">{resendMessage}</p>
+          )}
+          {resendError && (
+            <p className="rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-(--color-error)">
+              {resendError}
+            </p>
+          )}
+          {verifyState.error && (
+            <p className="rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-(--color-error)">
+              {verifyState.error}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={verifyPending}
+            className="group h-12 w-full rounded-lg bg-[#0a0a0a] px-4 text-sm font-medium text-white transition-colors hover:bg-black/90 disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {verifyPending ? (
+              "Verifying…"
+            ) : (
+              <>
+                {copy.otpVerify}
+                <ArrowRight
+                  size={18}
+                  className="transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
+                />
+              </>
+            )}
+          </button>
+        </form>
+      ) : (
+      <form
+        action={isSignUp ? signupFormAction : signinFormAction}
+        className="space-y-5 mt-8"
       >
-        <GoogleMark />
-        {copy.google}
-      </button>
-
-      <div className="my-6 flex items-center gap-4" aria-hidden="true">
-        <span className="h-px flex-1 bg-(--color-border)" />
-        <span className="text-xs font-bold uppercase tracking-[0.18em] text-(--color-text-light)">
-          {dict.common.or}
-        </span>
-        <span className="h-px flex-1 bg-(--color-border)" />
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-5">
+        <input type="hidden" name="callbackUrl" value={callbackUrl} />
         {isSignUp && (
           <div>
             <label htmlFor="full-name">{dict.auth.full_name}</label>
@@ -194,9 +407,7 @@ export function AuthForm({ mode, lang, dict }: AuthFormProps) {
 
         {isSignUp ? (
           <div>
-            <label htmlFor="identifier">
-              {dict.auth.email} / {dict.auth.phone}
-            </label>
+            <label htmlFor="identifier">{dict.auth.email_or_phone}</label>
             <div className="relative">
               <AtSign
                 aria-hidden="true"
@@ -216,20 +427,19 @@ export function AuthForm({ mode, lang, dict }: AuthFormProps) {
           </div>
         ) : (
           <div>
-            <label htmlFor="email">{dict.auth.email}</label>
+            <label htmlFor="identifier">{dict.auth.email_or_phone}</label>
             <div className="relative">
-              <Mail
+              <AtSign
                 aria-hidden="true"
                 size={18}
                 className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-(--color-text-light)"
               />
               <input
-                id="email"
-                name="email"
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                placeholder="name@example.com"
+                id="identifier"
+                name="identifier"
+                type="text"
+                autoComplete="username"
+                placeholder="name@example.com / +880 1XXX-XXXXXX"
                 required
                 className="h-12 rounded-lg ps-11 pe-4 focus:border-(--color-dark) focus:outline-none focus:shadow-none"
               />
@@ -263,6 +473,9 @@ export function AuthForm({ mode, lang, dict }: AuthFormProps) {
               type={showPassword ? "text" : "password"}
               autoComplete={isSignUp ? "new-password" : "current-password"}
               placeholder="••••••••"
+              onChange={(e) => {
+                passwordDraftRef.current = e.target.value;
+              }}
               className="h-12 rounded-lg ps-11 pe-12 focus:border-(--color-dark) focus:outline-none focus:shadow-none"
             />
             <button
@@ -334,27 +547,49 @@ export function AuthForm({ mode, lang, dict }: AuthFormProps) {
           </p>
         )}
 
+        {detailsError && (
+          <p className="rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-(--color-error)">
+            {detailsError}
+          </p>
+        )}
+
         <button
           type="submit"
-          className="group h-12 w-full rounded-lg bg-[#0a0a0a] px-4 text-sm font-medium text-white transition-colors hover:bg-black/90"
+          disabled={detailsPending}
+          className="group h-12 w-full rounded-lg bg-[#0a0a0a] px-4 text-sm font-medium text-white transition-colors hover:bg-black/90 disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {isSignUp ? copy.signUp : copy.signIn}
-          <ArrowRight
-            size={18}
-            className="transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
-          />
+          {detailsPending ? (
+            isSignUp ? (
+              "Creating account…"
+            ) : (
+              "Signing in…"
+            )
+          ) : (
+            <>
+              {isSignUp ? copy.signUp : copy.signIn}
+              <ArrowRight
+                size={18}
+                className="transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
+              />
+            </>
+          )}
         </button>
       </form>
+      )}
 
-      <p className="mt-7 text-center text-sm text-(--color-text-muted)">
-        {isSignUp ? dict.auth.have_account : dict.auth.no_account}{" "}
-        <Link
-          href={`/${lang}/${isSignUp ? "sign-in" : "sign-up"}`}
-          className="font-bold text-(--color-primary) hover:text-(--color-primary-dark)"
-        >
-          {isSignUp ? dict.nav.sign_in : dict.nav.sign_up}
-        </Link>
-      </p>
+      {!showOtpStep && (
+        <p className="mt-7 text-center text-sm text-(--color-text-muted)">
+          {isSignUp ? dict.auth.have_account : dict.auth.no_account}{" "}
+          <Link
+            href={`/${lang}/${isSignUp ? "sign-in" : "sign-up"}${
+              callbackUrlProp ? `?callbackUrl=${encodeURIComponent(callbackUrlProp)}` : ""
+            }`}
+            className="font-bold text-(--color-primary) hover:text-(--color-primary-dark)"
+          >
+            {isSignUp ? dict.nav.sign_in : dict.nav.sign_up}
+          </Link>
+        </p>
+      )}
 
       <p className="mt-8 flex items-center justify-center gap-2 text-center text-xs text-(--color-text-light)">
         <LockKeyhole size={13} />

@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Heart, Minus, Plus, RotateCcw, ShieldCheck, ShoppingCart, Truck, Zap } from "lucide-react";
+import { Check, Heart, Minus, Plus, RotateCcw, ShieldCheck, ShoppingCart, Truck, Zap } from "lucide-react";
 import { colorSwatches, type Product } from "@/app/data/products";
+import { useCart } from "@/component/providers/CartProvider";
 import { useCurrency } from "@/component/providers/CurrencyProvider";
+import { useWishlist } from "@/component/providers/WishlistProvider";
 
 interface ProductDetailInfoProps {
   product: Omit<Product, "icon">;
@@ -23,8 +25,17 @@ export function ProductDetailInfo({
   buyNowLabel,
 }: ProductDetailInfoProps) {
   const { format } = useCurrency();
+  const { addItem } = useCart();
+  const { isWishlisted, toggleItem } = useWishlist();
   const [quantity, setQuantity] = useState(1);
-  const [wishlisted, setWishlisted] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
+  const wishlisted = isWishlisted(product.id);
+
+  const handleAddToCart = () => {
+    addItem(product, quantity);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1500);
+  };
 
   const discountPercent = product.originalPrice
     ? Math.round((1 - product.price / product.originalPrice) * 100)
@@ -104,7 +115,7 @@ export function ProductDetailInfo({
           type="button"
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={wishlisted}
-          onClick={() => setWishlisted((w) => !w)}
+          onClick={() => toggleItem(product)}
           className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-(--radius-md) border p-0 transition-colors ${
             wishlisted
               ? "border-(--color-primary) bg-(--color-primary-faint) text-(--color-primary)"
@@ -116,9 +127,13 @@ export function ProductDetailInfo({
       </div>
 
       <div className="mt-4 flex flex-col gap-2.5 sm:flex-row">
-        <button type="button" className="btn-outline inline-flex flex-1 items-center justify-center gap-2">
-          <ShoppingCart size={16} />
-          {addToCartLabel}
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className="btn-outline inline-flex flex-1 items-center justify-center gap-2"
+        >
+          {justAdded ? <Check size={16} /> : <ShoppingCart size={16} />}
+          {justAdded ? "Added" : addToCartLabel}
         </button>
         <button type="button" className="btn-primary inline-flex flex-1 items-center justify-center gap-2">
           <Zap size={16} />

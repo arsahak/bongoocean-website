@@ -24,6 +24,8 @@ import {
 
 export interface Product {
   id: string;
+  /** Backend MongoDB _id — needed to place a real order. Absent on demo data. */
+  productId?: string;
   name: string;
   href: string;
   image?: string;

@@ -3,10 +3,12 @@
 import type { Product } from "@/app/data/products";
 import type { Locale } from "@/app/i18n-config";
 import { useCurrency } from "@/component/providers/CurrencyProvider";
-import { Star } from "lucide-react";
+import { useCart } from "@/component/providers/CartProvider";
+import { useWishlist } from "@/component/providers/WishlistProvider";
+import { ArrowRight, Check, Heart, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 
 const badgeClass: Record<NonNullable<Product["badge"]>, string> = {
   new: "badge-success",
@@ -19,10 +21,29 @@ interface ProductCardProps {
   /** Pre-rendered on the server — Lucide icon components can't cross the server/client boundary as a prop. */
   icon: ReactNode;
   lang: Locale;
+  addToCartLabel: string;
 }
 
-export function ProductCard({ product, icon, lang }: ProductCardProps) {
+export function ProductCard({ product, icon, lang, addToCartLabel }: ProductCardProps) {
   const { format } = useCurrency();
+  const { addItem } = useCart();
+  const { isWishlisted, toggleItem } = useWishlist();
+  const wishlisted = isWishlisted(product.id);
+  const [justAdded, setJustAdded] = useState(false);
+
+  useEffect(() => {
+    if (!justAdded) return;
+    const timer = setTimeout(() => setJustAdded(false), 1500);
+    return () => clearTimeout(timer);
+  }, [justAdded]);
+
+  // Buttons sit inside the card's <Link>, so stop them from navigating.
+  const handleAddToCart = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem(product);
+    setJustAdded(true);
+  };
 
   const discountPercent = product.originalPrice
     ? Math.round((1 - product.price / product.originalPrice) * 100)
@@ -47,6 +68,23 @@ export function ProductCard({ product, icon, lang }: ProductCardProps) {
               : product.badge}
           </span>
         )}
+        <button
+          type="button"
+          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          aria-pressed={wishlisted}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleItem(product);
+          }}
+          className="absolute end-2.5 top-2.5 z-10 p-0.5 text-pink-500 drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.25)] transition-transform hover:scale-115 active:scale-90"
+        >
+          <Heart
+            size={22}
+            strokeWidth={2}
+            className={`transition-colors ${wishlisted ? "fill-pink-500" : "fill-transparent"}`}
+          />
+        </button>
         {product.image ? (
           <Image
             src={product.image}
@@ -77,13 +115,37 @@ export function ProductCard({ product, icon, lang }: ProductCardProps) {
           {product.name}
         </h3>
 
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="price">{format(product.price)}</span>
-          {product.originalPrice && (
-            <span className="price-original">
-              {format(product.originalPrice)}
-            </span>
-          )}
+        <div className="mt-2.5 flex flex-wrap items-end justify-between gap-x-2 gap-y-1">
+          <div className="flex min-w-0 flex-col leading-tight">
+            {product.originalPrice && (
+              <span className="price-original text-xs">
+                {format(product.originalPrice)}
+              </span>
+            )}
+            <span className="price truncate">{format(product.price)}</span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            aria-label={`${addToCartLabel}: ${product.name}`}
+            className={`group/add inline-flex shrink-0 items-center gap-1 py-1 text-xs font-semibold whitespace-nowrap transition-colors active:scale-95 ${
+              justAdded
+                ? "text-(--color-success)"
+                : "text-(--color-primary) hover:text-(--color-primary-dark)"
+            }`}
+          >
+            {addToCartLabel}
+            {justAdded ? (
+              <Check size={14} strokeWidth={2.5} />
+            ) : (
+              <ArrowRight
+                size={14}
+                strokeWidth={2.5}
+                className="transition-transform group-hover/add:translate-x-0.5 rtl:rotate-180 rtl:group-hover/add:-translate-x-0.5"
+              />
+            )}
+          </button>
         </div>
       </div>
     </Link>

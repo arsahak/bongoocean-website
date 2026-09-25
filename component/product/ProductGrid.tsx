@@ -19,6 +19,7 @@ import {
 
 interface ProductGridProps {
   lang: Locale;
+  addToCartLabel: string;
 }
 
 const SORT_OPTIONS = [
@@ -39,7 +40,7 @@ const SORT_PARAM: Record<SortValue, ListProductsParams["sort"]> = {
 const PAGE_SIZE = 20;
 const SKELETON_COUNT = 12;
 
-export function ProductGrid({ lang }: ProductGridProps) {
+export function ProductGrid({ lang, addToCartLabel }: ProductGridProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(
@@ -369,6 +370,7 @@ export function ProductGrid({ lang }: ProductGridProps) {
               return (
                 <FadeIn key={product.id} delay={Math.min(i, 4) * 0.05}>
                   <ProductCard
+                    addToCartLabel={addToCartLabel}
                     product={product}
                     lang={lang}
                     icon={

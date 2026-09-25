@@ -18,6 +18,7 @@ import {
 // price/badge logic only lives — and only needs fixing — in one place.
 export type CatalogCardProduct = {
   id: string;
+  productId: string;
   href: string;
   name: string;
   image?: string;
@@ -86,6 +87,7 @@ export function toCatalogCardProduct(
 
   return {
     id: product.slug || product._id,
+    productId: product._id,
     href: `/${product.slug || product._id}`,
     name: product.title,
     image: product.featureImage || product.galleryImages[0],
