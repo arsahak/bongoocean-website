@@ -9,7 +9,7 @@ import { easeSmooth } from "@/component/motion/variants";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 interface CategoryGridProps {
   dict: Dictionary;
@@ -18,6 +18,9 @@ interface CategoryGridProps {
 
 const PAGE_SIZE = 8;
 const ROTATE_MS = 3000;
+// Enough skeleton rows to fill the desktop panel like a real category list.
+const SKELETON_ROWS = 10;
+const SKELETON_LABEL_WIDTHS = [70, 55, 80, 60, 75, 50, 65, 85, 58, 72];
 const PANEL_HEIGHT = "lg:h-[460px]";
 const FALLBACK_CATEGORY_IMAGE =
   "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=80";
@@ -144,11 +147,27 @@ export function CategoryGrid({ dict }: CategoryGridProps) {
             className={`flex gap-2 overflow-x-auto scroll-smooth pb-2 lg:flex-col lg:gap-1 lg:overflow-x-visible lg:overflow-y-auto lg:rounded-(--radius-lg) lg:border lg:border-(--color-border) lg:bg-(--color-surface) lg:p-2 ${PANEL_HEIGHT}`}
           >
             {isLoading ? (
-              Array.from({ length: 5 }).map((_, index) => (
+              // Mirrors the real list: pills in a row on mobile, a full-height
+              // column of icon + label rows on desktop.
+              Array.from({ length: SKELETON_ROWS }).map((_, index) => (
                 <div
                   key={`category-skeleton-${index}`}
-                  className="h-12 w-full animate-pulse rounded-(--radius-md) bg-(--color-border)"
-                />
+                  aria-hidden="true"
+                  className={`flex shrink-0 items-center gap-2.5 rounded-(--radius-md) px-3 py-2.5 max-lg:border max-lg:border-(--color-border) lg:w-full lg:flex-1 lg:py-0 ${
+                    index >= 5 ? "max-lg:hidden" : ""
+                  }`}
+                >
+                  <span className="skeleton h-[18px] w-[18px] shrink-0 rounded-md" />
+                  <span
+                    className="skeleton h-3 w-20 rounded-full lg:w-(--label-w)"
+                    style={
+                      {
+                        "--label-w": `${SKELETON_LABEL_WIDTHS[index % SKELETON_LABEL_WIDTHS.length]}%`,
+                      } as CSSProperties
+                    }
+                  />
+                  <span className="skeleton ms-auto hidden h-2.5 w-1.5 shrink-0 rounded-full lg:block" />
+                </div>
               ))
             ) : topCategories.length > 0 ? (
               topCategories.map((category, i) => {
@@ -188,11 +207,18 @@ export function CategoryGrid({ dict }: CategoryGridProps) {
           <div className={PANEL_HEIGHT}>
             {isLoading ? (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:h-full lg:grid-rows-2">
-                {Array.from({ length: 8 }).map((_, index) => (
+                {Array.from({ length: PAGE_SIZE }).map((_, index) => (
                   <div
                     key={`card-skeleton-${index}`}
-                    className="aspect-square animate-pulse rounded-(--radius-lg) bg-(--color-border) lg:aspect-auto lg:h-full"
-                  />
+                    aria-hidden="true"
+                    className="skeleton relative aspect-square rounded-(--radius-lg) lg:aspect-auto lg:h-full"
+                  >
+                    {/* Placeholder for the name + product count caption. */}
+                    <div className="absolute inset-x-2.5 bottom-2.5 space-y-1.5">
+                      <span className="block h-3 w-3/4 rounded-full bg-(--color-surface)/70" />
+                      <span className="block h-2.5 w-1/3 rounded-full bg-(--color-surface)/50" />
+                    </div>
+                  </div>
                 ))}
               </div>
             ) : hasCards ? (

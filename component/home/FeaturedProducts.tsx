@@ -129,11 +129,11 @@ export function FeaturedProducts({ dict, lang }: FeaturedProductsProps) {
                 key={`featured-skeleton-${index}`}
                 className="overflow-hidden rounded-(--radius-lg) border border-(--color-border) bg-(--color-surface)"
               >
-                <div className="aspect-square animate-pulse bg-(--color-border)" />
+                <div className="aspect-square skeleton" />
                 <div className="space-y-2 p-3">
-                  <div className="h-3 w-20 animate-pulse rounded-full bg-(--color-border)" />
-                  <div className="h-4 w-full animate-pulse rounded-full bg-(--color-border)" />
-                  <div className="h-4 w-2/3 animate-pulse rounded-full bg-(--color-border)" />
+                  <div className="h-3 w-20 skeleton rounded-full" />
+                  <div className="h-4 w-full skeleton rounded-full" />
+                  <div className="h-4 w-2/3 skeleton rounded-full" />
                 </div>
               </div>
             ))

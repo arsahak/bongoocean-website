@@ -10,6 +10,7 @@ import {
 import { useParams } from "next/navigation";
 import {
   baseCurrency as defaultBaseCurrency,
+  currencies,
   isCurrencyCode,
   localeCurrencyMap,
   type CurrencyCode,
@@ -101,14 +102,23 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 
   const format = (amountInBase: number) => {
     const value = convert(amountInBase);
+    const symbol =
+      currencies.find((c) => c.code === currency)?.symbol ?? currency;
     try {
+      // Intl prints codes like "BDT 1,430" for some locales, so swap in our
+      // configured symbol (৳, $, A$…) while keeping locale digits/placement.
       return new Intl.NumberFormat(lang, {
         style: "currency",
         currency,
+        currencyDisplay: "code",
         maximumFractionDigits: value >= 100 ? 0 : 2,
-      }).format(value);
+      })
+        .formatToParts(value)
+        .map((part) => (part.type === "currency" ? symbol : part.value))
+        .join("")
+        .replace(/^(\S+)\s(?=\d)/u, "$1");
     } catch {
-      return `${value.toFixed(2)} ${currency}`;
+      return `${symbol}${value.toFixed(2)}`;
     }
   };
 

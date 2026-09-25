@@ -1,14 +1,18 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Check, Heart, Minus, Plus, RotateCcw, ShieldCheck, ShoppingCart, Truck, Zap } from "lucide-react";
 import { colorSwatches, type Product } from "@/app/data/products";
+import type { Locale } from "@/app/i18n-config";
 import { useCart } from "@/component/providers/CartProvider";
+import { ProductShare } from "@/component/product/ProductShare";
 import { useCurrency } from "@/component/providers/CurrencyProvider";
 import { useWishlist } from "@/component/providers/WishlistProvider";
 
 interface ProductDetailInfoProps {
   product: Omit<Product, "icon">;
+  lang: Locale;
   shortDescription?: string;
   weight?: number;
   unit?: string;
@@ -18,6 +22,7 @@ interface ProductDetailInfoProps {
 
 export function ProductDetailInfo({
   product,
+  lang,
   shortDescription,
   weight,
   unit,
@@ -25,7 +30,8 @@ export function ProductDetailInfo({
   buyNowLabel,
 }: ProductDetailInfoProps) {
   const { format } = useCurrency();
-  const { addItem } = useCart();
+  const { addItem, updateQty, items } = useCart();
+  const router = useRouter();
   const { isWishlisted, toggleItem } = useWishlist();
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
@@ -35,6 +41,18 @@ export function ProductDetailInfo({
     addItem(product, quantity);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
+  };
+
+  // Buy Now puts exactly the chosen quantity in the cart (without stacking on
+  // top of an earlier add) and goes straight to checkout — which itself sends
+  // signed-out visitors to sign-in and back.
+  const handleBuyNow = () => {
+    if (items.some((item) => item.id === product.id)) {
+      updateQty(product.id, quantity);
+    } else {
+      addItem(product, quantity);
+    }
+    router.push(`/${lang}/checkout`);
   };
 
   const discountPercent = product.originalPrice
@@ -135,11 +153,17 @@ export function ProductDetailInfo({
           {justAdded ? <Check size={16} /> : <ShoppingCart size={16} />}
           {justAdded ? "Added" : addToCartLabel}
         </button>
-        <button type="button" className="btn-primary inline-flex flex-1 items-center justify-center gap-2">
+        <button
+          type="button"
+          onClick={handleBuyNow}
+          className="btn-primary inline-flex flex-1 items-center justify-center gap-2"
+        >
           <Zap size={16} />
           {buyNowLabel}
         </button>
       </div>
+
+      <ProductShare title={product.name} />
 
       <div className="mt-6 grid grid-cols-1 gap-2.5 border-t border-(--color-border) pt-5 sm:grid-cols-3">
         <span className="inline-flex items-center gap-1.5 text-xs text-(--color-text-muted)">

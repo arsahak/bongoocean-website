@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import Image from "next/image";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -11,6 +11,10 @@ import { getDictionary } from "@/app/dictionaries";
 import { locales, type Locale } from "@/app/i18n-config";
 import { ProductCard } from "@/component/product/ProductCard";
 import { ProductDetailInfo } from "@/component/product/ProductDetailInfo";
+import {
+  ProductGallery,
+  type ProductMedia,
+} from "@/component/product/ProductGallery";
 import { ProductTabs } from "@/component/product/ProductTabs";
 import {
   CATALOG_CARD_ICONS,
@@ -63,6 +67,50 @@ function hashIndex(id: string): number {
     hash = (hash * 31 + id.charCodeAt(i)) | 0;
   }
   return Math.abs(hash);
+}
+
+// Product pages get their own title/description/image and URL — the layout's
+// defaults point og:url and canonical at the home page, which would make
+// Facebook/LinkedIn/X share previews show the home page instead.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string; slug: string }>;
+}): Promise<Metadata> {
+  const { lang, slug } = await params;
+  if (!locales.includes(lang as Locale)) return {};
+
+  const productRes = await getCatalogProductAction(slug);
+  if (!productRes.ok || !productRes.data) return {};
+  const product = productRes.data;
+
+  // Non-home pages have no locale prefix (see proxy.ts) — one URL for all languages.
+  const path = `/product/${product.slug}`;
+  const description = stripHtml(product.shortDescription ?? "")
+    .replace(/\s+/g, " ")
+    .slice(0, 160);
+  const image = product.featureImage || product.galleryImages?.[0];
+  const images = image ? [{ url: image, alt: product.title }] : undefined;
+
+  return {
+    title: product.title,
+    description: description || undefined,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "website",
+      url: path,
+      title: product.title,
+      description: description || undefined,
+      siteName: "BongoOcean",
+      ...(images && { images }),
+    },
+    twitter: {
+      card: images ? "summary_large_image" : "summary",
+      title: product.title,
+      description: description || undefined,
+      ...(image && { images: [image] }),
+    },
+  };
 }
 
 export default async function ProductDetailPage({
@@ -122,6 +170,33 @@ export default async function ProductDetailPage({
   // strip tags/entities down to plain text for this compact detail-page blurb.
   const shortDescription = stripHtml(rawProduct.shortDescription ?? "");
 
+  // Gallery order: feature image first, then the product video (if any),
+  // then the remaining gallery images, de-duplicated. The gallery autoplays
+  // from the feature image into the video after a few seconds.
+  const imageUrls = [
+    ...new Set(
+      [rawProduct.featureImage, ...(rawProduct.galleryImages ?? [])].filter(
+        (src): src is string => Boolean(src),
+      ),
+    ),
+  ];
+  const media: ProductMedia[] = imageUrls.map((src) => ({
+    type: "image",
+    src,
+  }));
+  if (
+    rawProduct.videoUrl &&
+    (rawProduct.videoSource === "upload" || rawProduct.videoSource === "youtube")
+  ) {
+    media.splice(Math.min(1, media.length), 0, {
+      type: "video",
+      source: rawProduct.videoSource,
+      src: rawProduct.videoUrl,
+    });
+  }
+
+  const FallbackIcon = resolveCatalogFallbackIcon(category, cardIndex);
+
   return (
     <div className="container py-8">
       <nav
@@ -147,44 +222,29 @@ export default async function ProductDetailPage({
       </nav>
 
       <div className="mt-5 grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* Image */}
-        <div
-          className={`relative aspect-square overflow-hidden rounded-(--radius-2xl) ${
-            product.image ? "bg-white" : `bg-linear-to-br ${product.gradient}`
-          }`}
-        >
-          {product.badge && (
-            <span
-              className={`badge ${badgeClass[product.badge]} absolute start-3 top-3 z-10`}
-            >
-              {product.badge}
-            </span>
-          )}
-          {product.image ? (
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              unoptimized
-              className="object-contain p-6"
+        {/* Gallery */}
+        <ProductGallery
+          media={media}
+          alt={product.name}
+          fallbackGradient={product.gradient}
+          fallback={
+            <FallbackIcon
+              aria-hidden="true"
+              strokeWidth={1}
+              size={180}
+              className="absolute inset-0 m-auto text-white/90"
             />
-          ) : (
-            (() => {
-              const FallbackIcon = resolveCatalogFallbackIcon(
-                category,
-                cardIndex,
-              );
-              return (
-                <FallbackIcon
-                  aria-hidden="true"
-                  strokeWidth={1}
-                  size={180}
-                  className="absolute inset-0 m-auto text-white/90"
-                />
-              );
-            })()
-          )}
-        </div>
+          }
+          badge={
+            product.badge && (
+              <span
+                className={`badge ${badgeClass[product.badge]} absolute start-3 top-3 z-10`}
+              >
+                {product.badge}
+              </span>
+            )
+          }
+        />
 
         {/* Info */}
         <div>
@@ -208,6 +268,7 @@ export default async function ProductDetailPage({
 
           <ProductDetailInfo
             product={product}
+            lang={lang}
             shortDescription={shortDescription}
             weight={product.weight}
             unit={product.unit}

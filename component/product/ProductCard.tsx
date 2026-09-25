@@ -5,10 +5,43 @@ import type { Locale } from "@/app/i18n-config";
 import { useCurrency } from "@/component/providers/CurrencyProvider";
 import { useCart } from "@/component/providers/CartProvider";
 import { useWishlist } from "@/component/providers/WishlistProvider";
-import { ArrowRight, Check, Heart, Star } from "lucide-react";
+import { ArrowRight, Heart, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { type MouseEvent, type ReactNode } from "react";
+
+/** lucide `shopping-cart-minus` (v1.48, ISC) — not in the installed lucide-react yet. */
+function ShoppingCartMinus({ filled }: { filled: boolean }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="h-4.5 w-4.5 shrink-0"
+    >
+      {/* The outline is open lines, so "in cart" adds a solid basket traced along it. */}
+      {filled && (
+        <path
+          d="M4.564 5 6.25 14h12.712a2 2 0 0 0 1.991-1.57L22.18 5Z"
+          fill="currentColor"
+        />
+      )}
+      <path d="M16 5h6" />
+      <path d="m2.05 2.05 1.099-.028a1 1 0 011.008.815l2.69 14.347A1 1 0 007.83 18H18" />
+      <path d="M4.564 5H12" />
+      <path d="M6.25 14h12.712a2 2 0 001.991-1.57l.514-3.113" />
+      {/* Wheels fill along with the basket. */}
+      <circle cx="18" cy="20" r="2" className={`transition-colors ${filled ? "fill-current" : "fill-transparent"}`} />
+      <circle cx="8" cy="20" r="2" className={`transition-colors ${filled ? "fill-current" : "fill-transparent"}`} />
+    </svg>
+  );
+}
 
 const badgeClass: Record<NonNullable<Product["badge"]>, string> = {
   new: "badge-success",
@@ -24,25 +57,32 @@ interface ProductCardProps {
   addToCartLabel: string;
 }
 
-export function ProductCard({ product, icon, lang, addToCartLabel }: ProductCardProps) {
+export function ProductCard({
+  product,
+  icon,
+  lang,
+  addToCartLabel,
+}: ProductCardProps) {
   const { format } = useCurrency();
-  const { addItem } = useCart();
+  const { addItem, removeItem, items } = useCart();
   const { isWishlisted, toggleItem } = useWishlist();
+  const router = useRouter();
   const wishlisted = isWishlisted(product.id);
-  const [justAdded, setJustAdded] = useState(false);
-
-  useEffect(() => {
-    if (!justAdded) return;
-    const timer = setTimeout(() => setJustAdded(false), 1500);
-    return () => clearTimeout(timer);
-  }, [justAdded]);
+  const isInCart = items.some((item) => item.id === product.id);
 
   // Buttons sit inside the card's <Link>, so stop them from navigating.
-  const handleAddToCart = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleToggleCart = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isInCart) removeItem(product.id);
+    else addItem(product);
+  };
+
+  const handleBuyNow = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
     addItem(product);
-    setJustAdded(true);
+    router.push(`/${lang}/checkout`);
   };
 
   const discountPercent = product.originalPrice
@@ -102,7 +142,7 @@ export function ProductCard({ product, icon, lang, addToCartLabel }: ProductCard
         <div className="flex items-center gap-1 text-xs text-(--color-text-muted)">
           <Star
             size={13}
-            className="fill-(--color-accent) text-(--color-accent)"
+            className="fill-amber-400 text-amber-400"
           />
           <span className="font-medium text-(--color-dark)">
             {product.rating}
@@ -115,37 +155,40 @@ export function ProductCard({ product, icon, lang, addToCartLabel }: ProductCard
           {product.name}
         </h3>
 
-        <div className="mt-2.5 flex flex-wrap items-end justify-between gap-x-2 gap-y-1">
-          <div className="flex min-w-0 flex-col leading-tight">
+        <div className="mt-2.5 flex items-center justify-between gap-2">
+          <div className="flex min-w-0 flex-1 items-baseline gap-1.5 overflow-hidden whitespace-nowrap leading-tight">
+            <span className="price shrink-0 text-base text-(--color-primary)">{format(product.price)}</span>
             {product.originalPrice && (
-              <span className="price-original text-xs">
+              <span className="price-original truncate text-xs text-(--color-error)">
                 {format(product.originalPrice)}
               </span>
             )}
-            <span className="price truncate">{format(product.price)}</span>
           </div>
 
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            aria-label={`${addToCartLabel}: ${product.name}`}
-            className={`group/add inline-flex shrink-0 items-center gap-1 py-1 text-xs font-semibold whitespace-nowrap transition-colors active:scale-95 ${
-              justAdded
-                ? "text-(--color-success)"
-                : "text-(--color-primary) hover:text-(--color-primary-dark)"
-            }`}
-          >
-            {addToCartLabel}
-            {justAdded ? (
-              <Check size={14} strokeWidth={2.5} />
-            ) : (
+          <div className="flex shrink-0 items-center gap-1">
+            <button
+              type="button"
+              onClick={handleToggleCart}
+              aria-label={`${addToCartLabel}: ${product.name}`}
+              title={addToCartLabel}
+              aria-pressed={isInCart}
+              className="inline-flex h-8 w-8 shrink-0 items-center justify-center p-0 text-(--color-dark) transition-transform hover:scale-115 active:scale-90"
+            >
+              <ShoppingCartMinus filled={isInCart} />
+            </button>
+            <button
+              type="button"
+              onClick={handleBuyNow}
+              className="inline-flex h-8 max-w-20 min-w-0 items-center justify-center gap-1 px-1 text-xs font-semibold text-(--color-dark) transition-colors hover:text-(--color-primary) active:scale-[0.98]"
+            >
+              <span>Buy</span>
               <ArrowRight
                 size={14}
-                strokeWidth={2.5}
-                className="transition-transform group-hover/add:translate-x-0.5 rtl:rotate-180 rtl:group-hover/add:-translate-x-0.5"
+                aria-hidden="true"
+                className="shrink-0 rtl:rotate-180"
               />
-            )}
-          </button>
+            </button>
+          </div>
         </div>
       </div>
     </Link>

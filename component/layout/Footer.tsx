@@ -129,8 +129,11 @@ const Footer = ({ dict, lang }: FooterProps) => {
               className="h-10 w-auto sm:h-11"
             />
           </Link>
-          <p className="mt-4 max-w-xs text-sm text-(--color-text-muted)">
+          <p className="mt-4 text-sm font-semibold text-(--color-dark)">
             {dict.footer.tagline}
+          </p>
+          <p className="mt-2 max-w-sm text-sm leading-relaxed text-(--color-text-muted)">
+            {dict.footer.description}
           </p>
 
           <h6 className="mt-6 mb-3">{dict.footer.follow_us}</h6>
@@ -168,28 +171,29 @@ const Footer = ({ dict, lang }: FooterProps) => {
           <FooterLinks links={categoryLinks} />
         </div>
 
-        {/* Newsletter */}
+        {/* Vendor sign-up interest */}
         <div className="col-span-2 sm:col-span-3 lg:col-span-2">
-          <h6 className="mb-4">{dict.footer.newsletter_title}</h6>
+          <h6 className="mb-4">{dict.footer.vendor_title}</h6>
           <p className="mb-4 text-sm text-(--color-text-muted)">
-            {dict.footer.newsletter_subtitle}
+            {dict.footer.vendor_subtitle}
           </p>
           <form className="flex w-full items-center gap-1 rounded-full border border-(--color-border) bg-(--color-bg) p-1 transition-colors focus-within:border-(--color-primary) focus-within:bg-(--color-surface) focus-within:shadow-[0_0_0_3px_var(--color-primary-faint)]">
-            <label htmlFor="footer-newsletter" className="sr-only">
-              {dict.footer.newsletter_placeholder}
+            <label htmlFor="footer-vendor-email" className="sr-only">
+              {dict.footer.vendor_placeholder}
             </label>
             <input
-              id="footer-newsletter"
+              id="footer-vendor-email"
               type="email"
-              placeholder={dict.footer.newsletter_placeholder}
+              placeholder={dict.footer.vendor_placeholder}
               className="w-full min-w-0 border-0 bg-transparent px-3 py-0 shadow-none outline-none"
             />
             <button
               type="submit"
-              aria-label={dict.footer.subscribe}
-              className="btn-primary shrink-0 rounded-full px-5 py-2"
+              aria-label={dict.footer.vendor_submit}
+              title={dict.footer.vendor_submit}
+              className="btn-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-full p-0"
             >
-              <Send size={18} />
+              <Send aria-hidden="true" className="h-4 w-4 shrink-0 rtl:-scale-x-100" />
             </button>
           </form>
           <div className="mt-6 ">

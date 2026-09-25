@@ -39,7 +39,10 @@ export default async function ProductPage({
       </div>
 
       <div className="mt-6">
-        <ProductGrid lang={lang} addToCartLabel={dict.common.add_to_cart} />
+        <ProductGrid
+          lang={lang}
+          addToCartLabel={dict.common.add_to_cart}
+        />
       </div>
     </div>
   );

@@ -46,6 +46,10 @@ export interface Product {
   overview?: string;
   featureImage?: string;
   galleryImages: string[];
+  // Optional single product video: "upload" is a hosted file URL, "youtube"
+  // a canonical https://www.youtube.com/embed/{id} URL, "" means no video.
+  videoUrl?: string;
+  videoSource?: "upload" | "youtube" | "";
   price: number;
   discountPrice?: number;
   unit: ProductUnit;
